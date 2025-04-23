@@ -8,9 +8,20 @@
 import SwiftUI
 
 struct ReceiveListView: View {
+    @StateObject private var spreadSheetManager = SpreadSheetManager()
     var body: some View {
-        List(0 ..< 10) { band in
-            Text("バンド名")
+        VStack {
+            ForEach(spreadSheetManager.spreadSheetResponse.values, id: \.self) { index in
+                Text(index.description)
+            }
+        }
+        .task {
+            do {
+                try await spreadSheetManager.fetchGoogleSheetData()
+                print("success")
+            } catch {
+                print("error: \(error)")
+            }
         }
         NavigationLink{
             SubmitCompleteView()

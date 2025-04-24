@@ -22,7 +22,3 @@ struct ReceiveDetailView: View {
         }
     }
 }
-
-//#Preview {
-//    ReceiveDetailView()
-//}

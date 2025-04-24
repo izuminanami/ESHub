@@ -10,8 +10,12 @@ import SwiftUI
 struct SubmitCompleteView: View {
     var body: some View {
         NavigationStack {
-            Text("提出完了！")
-                .font(.title)
+            ZStack {
+                Color.gray.opacity(0.25)
+                    .edgesIgnoringSafeArea(.all)
+                Text("提出完了！")
+                    .font(.title)
+            }
         }
     }
 }

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ReceiveLoginView: View {
     @State var liveName = ""
-    @State var inputName12 = ""
+    @State var watchWord = ""
     var body: some View {
         NavigationStack {
             ZStack {
@@ -17,7 +17,7 @@ struct ReceiveLoginView: View {
                     .edgesIgnoringSafeArea(.all)
                 VStack(spacing: 10) {
                     Text("ライブ名")
-                    TextField("ライブ名を入力してください", text: $liveName)
+                    TextField("ex) 2025/5/1_◯◯大学軽音部_新歓ライブ", text: $liveName)
                         .textFieldStyle(.roundedBorder)
                         .padding()
                     
@@ -25,8 +25,8 @@ struct ReceiveLoginView: View {
                         .foregroundColor(.gray)
                         .padding()
                     
-                    Text("パスワード")
-                    TextField("パスワードを入力してください", text: $inputName12)
+                    Text("あいことば")
+                    TextField("あいことばを入力してください", text: $watchWord)
                         .textFieldStyle(.roundedBorder)
                         .padding()
                     
@@ -35,7 +35,7 @@ struct ReceiveLoginView: View {
                         .padding()
                     
                     NavigationLink{
-                        ReceiveListView()
+                        ReceiveListView(liveName: liveName)
                     } label: {
                         RoundedRectangle(cornerRadius: 20)
                             .fill(.blue)
@@ -46,6 +46,7 @@ struct ReceiveLoginView: View {
                 }
             }
         }
+        .navigationTitle("ログイン")
     }
 }
 

@@ -10,6 +10,12 @@ import SwiftUI
 struct ReceiveListView: View {
     @StateObject private var spreadSheetManager = SpreadSheetManager()
     @State private var isLoading = true
+    let liveName: String
+    var filteredRows: [[String]] {
+        spreadSheetManager.spreadSheetResponse.values.filter { row in
+            row.first == liveName
+        }
+    }
     var body: some View {
         NavigationStack {
             ZStack {
@@ -17,10 +23,12 @@ struct ReceiveListView: View {
                     .edgesIgnoringSafeArea(.all)
                 if isLoading {
                     ProgressView("loading...")
+                } else if filteredRows.isEmpty {
+                    Text("提出されたESはありません")
                 } else {
                     VStack {
                         List {
-                            ForEach(spreadSheetManager.spreadSheetResponse.values, id: \.self) { row in
+                            ForEach(filteredRows, id: \.self) { row in
                                 if row.count > 1 {
                                     NavigationLink {
                                         ReceiveDetailView(row: row)
@@ -30,6 +38,7 @@ struct ReceiveListView: View {
                                 }
                             }
                         }
+                        
                         NavigationLink{
                             
                         } label: {
@@ -53,9 +62,10 @@ struct ReceiveListView: View {
                 isLoading = false
             }
         }
+        .navigationTitle("参加バンドリスト")
     }
 }
 
 #Preview {
-    ReceiveListView()
+    ReceiveListView(liveName: "東京理科大学")
 }

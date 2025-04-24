@@ -10,9 +10,22 @@
 		B151036B2DB747840003367B /* ESHub.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ESHub.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		B14B0A742DB9CE5700B0CF7F /* Exceptions for "ESHub" folder in "ESHub" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = B151036A2DB747840003367B /* ESHub */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		B151036D2DB747840003367B /* ESHub */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				B14B0A742DB9CE5700B0CF7F /* Exceptions for "ESHub" folder in "ESHub" target */,
+			);
 			path = ESHub;
 			sourceTree = "<group>";
 		};
@@ -256,6 +269,7 @@
 				DEVELOPMENT_TEAM = GBVLR8PRV8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ESHub/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -285,6 +299,7 @@
 				DEVELOPMENT_TEAM = GBVLR8PRV8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ESHub/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

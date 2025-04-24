@@ -18,7 +18,6 @@ struct ReceiveDetailView: View {
                     Text("\(i+1)列目: \(row[i])")
                 }
             }
-            .padding()
             .navigationTitle("バンド詳細")
         }
     }

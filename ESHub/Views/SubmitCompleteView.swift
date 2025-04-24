@@ -13,10 +13,20 @@ struct SubmitCompleteView: View {
             ZStack {
                 Color.gray.opacity(0.25)
                     .edgesIgnoringSafeArea(.all)
-                Text("提出完了！")
-                    .font(.title)
+                VStack(spacing: 30) {
+                    Text("提出完了！")
+                        .font(.title)
+                    
+                    NavigationLink{
+                        HomeView()
+                    } label: {
+                        Text("ホームに戻る").font(.title3)
+                            .foregroundColor(.blue)
+                    }
+                }
             }
         }
+        .navigationBarBackButtonHidden()
     }
 }
 

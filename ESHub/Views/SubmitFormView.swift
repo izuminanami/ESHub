@@ -73,6 +73,7 @@ struct SubmitFormView: View {
                 }
             }
         }
+        .navigationTitle("ESフォーム")
     }
 }
 

@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct HomeView: View {
+    @State private var showInfo = false
     var body: some View {
         NavigationStack {
             ZStack {
@@ -18,11 +19,17 @@ struct HomeView: View {
                         Spacer()
                         
                         Text("How to use")
-                            .foregroundColor(Color("accentColor"))
+                            .foregroundColor(Color("emphasisColor"))
                         
-                        Image(systemName: "questionmark.circle")
-                            .foregroundColor(Color("accentColor"))
-                            .font(.system(size: 30))
+                        Button {
+                            withAnimation {
+                                showInfo = true
+                            }
+                        } label: {
+                            Image(systemName: "questionmark.circle")
+                                .foregroundColor(Color("emphasisColor"))
+                                .font(.system(size: 30))
+                        }
                     }
                     .padding(.horizontal, 50)
                     
@@ -47,6 +54,34 @@ struct HomeView: View {
                             .foregroundColor(Color("textColor"))
                             .shadow(radius: 5)
                     }
+                }
+                if showInfo {
+                    Color.black.opacity(0.3)
+                        .edgesIgnoringSafeArea(.all)
+                        .onTapGesture {
+                            showInfo = false // 背景タップでも閉じられるように
+                        }
+                        VStack(spacing: 30) {
+                            HStack {
+                                Spacer()
+                                Button {
+                                    withAnimation { // ToDo機能してない
+                                        showInfo = false
+                                    }
+                                } label: {
+                                    Image(systemName: "xmark.circle.fill")
+                                        .foregroundColor(Color("primaryButtonColor"))
+                                        .font(.system(size: 30))
+                                }
+                            }
+                            Text("使い方")
+                            
+                            Spacer()
+                    }
+                    .frame(width: 300, height: 500)
+                    .background(Color("popupColor"))
+                    .cornerRadius(20)
+                    .shadow(radius: 5)
                 }
             }
         }

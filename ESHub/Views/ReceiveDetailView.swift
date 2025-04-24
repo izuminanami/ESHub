@@ -11,7 +11,7 @@ struct ReceiveDetailView: View {
     let row: [String]
     var body: some View {
         ZStack {
-            Color.gray.opacity(0.25)
+            Color("backgroundColor")
                 .edgesIgnoringSafeArea(.all)
             VStack(alignment: .leading, spacing: 10) {
                 ForEach(row.indices, id: \.self) { i in

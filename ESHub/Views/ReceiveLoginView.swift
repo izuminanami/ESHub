@@ -13,11 +13,11 @@ struct ReceiveLoginView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Color.gray.opacity(0.25)
+                Color("backgroundColor")
                     .edgesIgnoringSafeArea(.all)
                 VStack(spacing: 10) {
                     Text("ライブ名")
-                    TextField("ex) 2025/5/1_◯◯大学軽音部_新歓ライブ", text: $liveName)
+                    TextField("ex) 2025/5/1_ES大学軽音部_新歓ライブ", text: $liveName)
                         .textFieldStyle(.roundedBorder)
                         .padding()
                     
@@ -30,7 +30,7 @@ struct ReceiveLoginView: View {
                         .textFieldStyle(.roundedBorder)
                         .padding()
                     
-                    Text("容易に推測されるパスワードは使用しないでください。")
+                    Text("容易に推測されるあいことばは使用しないでください。")
                         .foregroundColor(.gray)
                         .padding()
                     
@@ -38,7 +38,7 @@ struct ReceiveLoginView: View {
                         ReceiveListView(liveName: liveName)
                     } label: {
                         RoundedRectangle(cornerRadius: 20)
-                            .fill(.blue)
+                            .fill(Color("primaryButtonColor"))
                             .frame(width: 150, height: 50)
                             .overlay(Text("ログイン/作成").font(.title3))
                             .foregroundColor(.white)

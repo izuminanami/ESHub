@@ -11,7 +11,7 @@ struct SubmitCompleteView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Color.gray.opacity(0.25)
+                Color("backgroundColor")
                     .edgesIgnoringSafeArea(.all)
                 VStack(spacing: 30) {
                     Text("提出完了！")
@@ -21,7 +21,7 @@ struct SubmitCompleteView: View {
                         HomeView()
                     } label: {
                         Text("ホームに戻る").font(.title3)
-                            .foregroundColor(.blue)
+                            .foregroundColor(Color("primaryButtonColor"))
                     }
                 }
             }

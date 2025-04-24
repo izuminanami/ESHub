@@ -19,7 +19,7 @@ struct ReceiveListView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Color.gray.opacity(0.25)
+                Color("backgroundColor")
                     .edgesIgnoringSafeArea(.all)
                 if isLoading {
                     ProgressView("loading...")
@@ -43,7 +43,7 @@ struct ReceiveListView: View {
                             
                         } label: {
                             RoundedRectangle(cornerRadius: 20)
-                                .fill(.blue)
+                                .fill(Color("primaryButtonColor"))
                                 .frame(width: 100, height: 50)
                                 .overlay(Text("出力").font(.title))
                                 .foregroundColor(.white)

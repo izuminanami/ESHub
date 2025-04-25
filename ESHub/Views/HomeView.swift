@@ -39,9 +39,9 @@ struct HomeView: View {
                         RoundedRectangle(cornerRadius: 20)
                             .fill(Color("primaryButtonColor"))
                             .frame(width: 300, height: 150)
+                            .shadow(radius: 5)
                             .overlay(Text("ESを集める").font(.title))
                             .foregroundColor(.white)
-                            .shadow(radius: 5)
                     }
                     
                     NavigationLink{
@@ -50,9 +50,9 @@ struct HomeView: View {
                         RoundedRectangle(cornerRadius: 20)
                             .fill(Color("popupColor"))
                             .frame(width: 300, height: 150)
+                            .shadow(radius: 5)
                             .overlay(Text("ESを提出する").font(.title))
                             .foregroundColor(Color("textColor"))
-                            .shadow(radius: 5)
                     }
                 }
                 if showInfo {

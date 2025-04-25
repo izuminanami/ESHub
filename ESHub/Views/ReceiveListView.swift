@@ -45,6 +45,7 @@ struct ReceiveListView: View {
                             RoundedRectangle(cornerRadius: 20)
                                 .fill(Color("primaryButtonColor"))
                                 .frame(width: 100, height: 50)
+                                .shadow(radius: 5)
                                 .overlay(Text("出力").font(.title))
                                 .foregroundColor(.white)
                         }

@@ -40,6 +40,7 @@ struct ReceiveLoginView: View {
                         RoundedRectangle(cornerRadius: 20)
                             .fill(Color("primaryButtonColor"))
                             .frame(width: 150, height: 50)
+                            .shadow(radius: 5)
                             .overlay(Text("ログイン/作成").font(.title3))
                             .foregroundColor(.white)
                     }

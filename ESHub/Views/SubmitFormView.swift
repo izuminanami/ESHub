@@ -6,14 +6,16 @@
 //
 
 import SwiftUI
+import Alamofire
+import SwiftyJSON
 
 struct SubmitFormView: View {
-    @State private var liveName = ""
-    @State private var bandName = ""
-    @State private var otherRequest = ""
-    @State private var SE = "あり"
-    @State private var memberNames: [String: String] = [:]
     @State private var showPicker = false
+    @State private var isSubmitted = false
+    @State private var liveName: String = ""
+    @State private var bandName: String = ""
+    @State private var otherRequest: String = ""
+    @State private var se = "あり"
     @State private var songs: [SongEntry] = (0..<10).map { _ in
         SongEntry(title: "", minute: 0, second: 0, sound: "", lighting: "")
     }
@@ -26,6 +28,10 @@ struct SubmitFormView: View {
         BandMember(role: "Dr.", name: ""),
         BandMember(role: "Key.", name: "")
     ]
+    
+    private let url = "https://script.google.com/macros/s/AKfycbzR2gu1kHuewcT2t-QDAX_t0VGMysK8q1twXlRE-3hKcCmTb4BxPvdQSPPyzKDZ1bDI7A/exec"
+    private let error: Int = 3
+    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -98,7 +104,7 @@ struct SubmitFormView: View {
                         .frame(height: 30)
                     
                     Text("SE")
-                    Picker("", selection: $SE) {
+                    Picker("", selection: $se) {
                         ForEach(["あり", "なし"], id: \.self) { Text("\($0)") }
                     }
                     .pickerStyle(.segmented)
@@ -112,14 +118,18 @@ struct SubmitFormView: View {
                         .textFieldStyle(.roundedBorder)
                         .padding()
                     
-                    NavigationLink{
-                        SubmitCompleteView()
-                    } label: {
-                        RoundedRectangle(cornerRadius: 20)
-                            .fill(Color("primaryButtonColor"))
-                            .frame(width: 100, height: 50)
-                            .overlay(Text("提出").font(.title))
-                            .foregroundColor(.white)
+                    NavigationLink(destination: SubmitCompleteView(), isActive: $isSubmitted) {
+                        Button{
+                            sendData()
+                            isSubmitted = true
+                        } label: {
+                            RoundedRectangle(cornerRadius: 20)
+                                .fill(Color("primaryButtonColor"))
+                                .frame(width: 100, height: 50)
+                                .shadow(radius: 5)
+                                .overlay(Text("提出").font(.title))
+                                .foregroundColor(.white)
+                        }
                     }
                 }
                 if showPicker {
@@ -151,6 +161,7 @@ struct SubmitFormView: View {
                                 }
                             }
                             .frame(width: 60, height: 40)
+                            .shadow(radius: 5)
                             .background(Color("primaryButtonColor"))
                             .foregroundColor(.white)
                             .cornerRadius(10)
@@ -164,6 +175,44 @@ struct SubmitFormView: View {
             }
         }
         .navigationTitle("ESフォーム")
+    }
+    func sendData() {
+        guard !liveName.isEmpty, !bandName.isEmpty else {
+            print("名前と年齢を入力してください")
+            return
+        }
+        
+        var es: [String: Any] = [
+            "liveName": liveName,
+            "bandName": bandName,
+            "vo": members.count > 0 ? members[0].name : "",
+            "gt1": members.count > 1 ? members[1].name : "",
+            "gt2": members.count > 2 ? members[2].name : "",
+            "ba": members.count > 3 ? members[3].name : "",
+            "dr": members.count > 4 ? members[4].name : "",
+            "key": members.count > 5 ? members[5].name : "",
+            "se": se,
+            "otherRequest": otherRequest,
+            "title": songs.map {"\($0.title)"}.joined(separator: ", "),
+            "time": songs.map {"\($0.minute):\($0.second)"}.joined(separator: ", "),
+            "sound": songs.map {"\($0.sound)"}.joined(separator: ", "),
+            "lighting": songs.map {"\($0.lighting)"}.joined(separator: ", ")
+        ]
+        
+        let entrySheets = [es]
+        
+        AF.request(url,
+                   method: .post,
+                   parameters: ["entrySheets": entrySheets],
+                   encoding: JSONEncoding.default
+        ).responseString { response in
+            switch response.result {
+            case .success(let str):
+                print("成功: \(str)")
+            case .failure(let error):
+                print("エラー: \(error)")
+            }
+        }
     }
 }
 

@@ -6,6 +6,24 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		B190F0D82DBA8E8D00CB301E /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = B190F0D72DBA8E8D00CB301E /* Alamofire */; };
+		B1CFC3832DBA895300EBB688 /* SwiftyJSON in Frameworks */ = {isa = PBXBuildFile; productRef = B1CFC3822DBA895300EBB688 /* SwiftyJSON */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		B190F0D52DBA8C5C00CB301E /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		B151036B2DB747840003367B /* ESHub.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ESHub.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -36,6 +54,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B1CFC3832DBA895300EBB688 /* SwiftyJSON in Frameworks */,
+				B190F0D82DBA8E8D00CB301E /* Alamofire in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -68,6 +88,7 @@
 				B15103672DB747840003367B /* Sources */,
 				B15103682DB747840003367B /* Frameworks */,
 				B15103692DB747840003367B /* Resources */,
+				B190F0D52DBA8C5C00CB301E /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -78,6 +99,9 @@
 			);
 			name = ESHub;
 			packageProductDependencies = (
+				B1CFC3822DBA895300EBB688 /* SwiftyJSON */,
+				B190F0D72DBA8E8D00CB301E /* Alamofire */,
+				B190F0D92DBA8E8D00CB301E /* AlamofireDynamic */,
 			);
 			productName = ESHub;
 			productReference = B151036B2DB747840003367B /* ESHub.app */;
@@ -99,14 +123,19 @@
 				};
 			};
 			buildConfigurationList = B15103662DB747840003367B /* Build configuration list for PBXProject "ESHub" */;
-			developmentRegion = en;
+			developmentRegion = ja;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				ja,
 				Base,
 			);
 			mainGroup = B15103622DB747840003367B;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				B1CFC3812DBA895300EBB688 /* XCRemoteSwiftPackageReference "SwiftyJSON" */,
+				B190F0D62DBA8E8D00CB301E /* XCRemoteSwiftPackageReference "Alamofire" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B151036C2DB747840003367B /* Products */;
 			projectDirPath = "";
@@ -341,6 +370,43 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		B190F0D62DBA8E8D00CB301E /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.10.2;
+			};
+		};
+		B1CFC3812DBA895300EBB688 /* XCRemoteSwiftPackageReference "SwiftyJSON" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SwiftyJSON/SwiftyJSON";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		B190F0D72DBA8E8D00CB301E /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B190F0D62DBA8E8D00CB301E /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+		B190F0D92DBA8E8D00CB301E /* AlamofireDynamic */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B190F0D62DBA8E8D00CB301E /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = AlamofireDynamic;
+		};
+		B1CFC3822DBA895300EBB688 /* SwiftyJSON */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B1CFC3812DBA895300EBB688 /* XCRemoteSwiftPackageReference "SwiftyJSON" */;
+			productName = SwiftyJSON;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = B15103632DB747840003367B /* Project object */;
 }

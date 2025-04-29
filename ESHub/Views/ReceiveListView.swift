@@ -13,7 +13,7 @@ struct ReceiveListView: View {
     let liveName: String
     var filteredRows: [[String]] {
         spreadSheetManager.spreadSheetResponse.values.filter { row in
-            row.first == liveName
+            row[1] == liveName
         }
     }
     var body: some View {
@@ -33,7 +33,7 @@ struct ReceiveListView: View {
                                     NavigationLink {
                                         ReceiveDetailView(row: row)
                                     } label: {
-                                        Text(row[1])
+                                        Text(row[2])
                                     }
                                 }
                             }

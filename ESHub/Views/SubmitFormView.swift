@@ -39,27 +39,30 @@ struct SubmitFormView: View {
                     .edgesIgnoringSafeArea(.all)
                 ScrollView {
                     Spacer()
+                        .frame(height: 20)
+                    
                     HStack {
                         Text("ライブ名：")
                         TextField("ライブ名を入力してください", text: $liveName)
                             .textFieldStyle(.roundedBorder)
-                            .padding()
                     }
                     .padding(.horizontal)
+                    
+                    Spacer()
+                        .frame(height: 20)
                     
                     HStack {
                         Text("バンド名：")
                         TextField("バンド名を入力してください", text: $bandName)
                             .textFieldStyle(.roundedBorder)
-                            .padding()
                     }
                     .padding(.horizontal)
                     
                     HStack(spacing: 40) {
                         Text("曲名")
                         Text("時間")
-                        Text("音響\nリクエスト")
-                        Text("照明\nリクエスト")
+                        Text("音響要望")
+                        Text("照明要望")
                     }
                     .padding()
                     
@@ -83,7 +86,7 @@ struct SubmitFormView: View {
                     }
                     
                     Spacer()
-                        .frame(height: 30)
+                        .frame(height: 20)
                     
                     Text("バンドメンバー")
                     
@@ -101,7 +104,7 @@ struct SubmitFormView: View {
                     // ToDoセット図を実装
                     
                     Spacer()
-                        .frame(height: 30)
+                        .frame(height: 20)
                     
                     Text("SE")
                     Picker("", selection: $se) {
@@ -111,12 +114,15 @@ struct SubmitFormView: View {
                     .frame(width: 100)
                     
                     Spacer()
-                        .frame(height: 30)
+                        .frame(height: 20)
                     
                     Text("その他")
                     TextField("その他要望があれば入力してください", text: $otherRequest)
                         .textFieldStyle(.roundedBorder)
-                        .padding()
+                        .padding(.horizontal)
+                    
+                    Spacer()
+                        .frame(height: 20)
                     
                     NavigationLink(destination: SubmitCompleteView(), isActive: $isSubmitted) {
                         Button{
@@ -142,7 +148,7 @@ struct SubmitFormView: View {
                         VStack(spacing: 20) {
                             HStack(spacing: 30) {
                                 Picker("分", selection: $songs[index].minute) {
-                                    ForEach(0 ..< 21, id: \.self) { Text("\($0)分") }
+                                    ForEach(0 ..< 20, id: \.self) { Text("\($0)分") }
                                 }
                                 .pickerStyle(.wheel)
                                 .frame(width: 100)
@@ -178,11 +184,21 @@ struct SubmitFormView: View {
     }
     func sendData() {
         guard !liveName.isEmpty, !bandName.isEmpty else {
-            print("名前と年齢を入力してください")
+            print("ライブ名とバンド名を入力してください")
+            return
+        }
+        guard songs.contains(where: { !$0.title.isEmpty }) else {
+            print("少なくとも1曲は入力してください")
             return
         }
         
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy/MM/dd HH:mm"
+        formatter.timeZone = TimeZone(identifier: "Asia/Tokyo")
+        let dateString = formatter.string(from: Date())
+        
         var es: [String: Any] = [
+            "date": dateString,
             "liveName": liveName,
             "bandName": bandName,
             "vo": members.count > 0 ? members[0].name : "",
@@ -194,7 +210,7 @@ struct SubmitFormView: View {
             "se": se,
             "otherRequest": otherRequest,
             "title": songs.map {"\($0.title)"}.joined(separator: ", "),
-            "time": songs.map {"\($0.minute):\($0.second)"}.joined(separator: ", "),
+            "time": songs.map { String(format: "%d:%02d", $0.minute, $0.second) }.joined(separator: ", "),
             "sound": songs.map {"\($0.sound)"}.joined(separator: ", "),
             "lighting": songs.map {"\($0.lighting)"}.joined(separator: ", ")
         ]

@@ -101,7 +101,6 @@
 			packageProductDependencies = (
 				B1CFC3822DBA895300EBB688 /* SwiftyJSON */,
 				B190F0D72DBA8E8D00CB301E /* Alamofire */,
-				B190F0D92DBA8E8D00CB301E /* AlamofireDynamic */,
 			);
 			productName = ESHub;
 			productReference = B151036B2DB747840003367B /* ESHub.app */;
@@ -299,6 +298,8 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ESHub/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ESHub;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -329,6 +330,8 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ESHub/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ESHub;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -395,11 +398,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B190F0D62DBA8E8D00CB301E /* XCRemoteSwiftPackageReference "Alamofire" */;
 			productName = Alamofire;
-		};
-		B190F0D92DBA8E8D00CB301E /* AlamofireDynamic */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = B190F0D62DBA8E8D00CB301E /* XCRemoteSwiftPackageReference "Alamofire" */;
-			productName = AlamofireDynamic;
 		};
 		B1CFC3822DBA895300EBB688 /* SwiftyJSON */ = {
 			isa = XCSwiftPackageProductDependency;

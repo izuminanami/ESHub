@@ -61,23 +61,26 @@ struct HomeView: View {
                         .onTapGesture {
                             showInfo = false // 背景タップでも閉じられるように
                         }
-                        VStack(spacing: 30) {
-                            HStack {
-                                Spacer()
-                                Button {
-                                    withAnimation { // ToDo機能してない
-                                        showInfo = false
-                                    }
-                                } label: {
-                                    Image(systemName: "xmark.circle.fill")
-                                        .foregroundColor(Color("primaryButtonColor"))
-                                        .font(.system(size: 30))
-                                }
-                            }
-                            Text("使い方")
-                            
+                    VStack(spacing: 30) {
+                        HStack {
                             Spacer()
+                            Button {
+                                withAnimation { // ToDo機能してない
+                                    showInfo = false
+                                }
+                            } label: {
+                                Image(systemName: "xmark.circle.fill")
+                                    .foregroundColor(Color("primaryButtonColor"))
+                                    .font(.system(size: 30))
+                            }
+                        }
+                        Text("使い方")
+                        
+                        Text("画面を横にすると入力や表示がしやすいです。")
+                        
+                        Spacer()
                     }
+                    .padding()
                     .frame(width: 300, height: 500)
                     .background(Color("popupColor"))
                     .cornerRadius(20)

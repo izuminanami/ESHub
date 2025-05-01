@@ -214,6 +214,13 @@ struct ReceiveDetailView: View {
                         Text("提出日時：" + row[0])
                             .padding(.vertical, 5)
                     }
+                    Spacer()
+                        .frame(height: 70)
+                }
+                VStack {
+                    Spacer()
+                    AdMobBannerView()
+                        .frame(width: 320, height: 50)
                 }
             }
             .navigationTitle("バンド詳細(横画面推奨)")

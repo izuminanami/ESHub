@@ -156,6 +156,8 @@ struct SubmitFormView: View {
                         .navigationDestination(isPresented: $isSubmitted) {
                             SubmitCompleteView()
                         }
+                        Spacer()
+                            .frame(height: 70)
                     }
                     if showPicker {
                         Color.black.opacity(0.3)
@@ -196,6 +198,11 @@ struct SubmitFormView: View {
                             .cornerRadius(20)
                             .shadow(radius: 5)
                         }
+                    }
+                    VStack {
+                        Spacer()
+                        AdMobBannerView()
+                            .frame(width: 320, height: 50)
                     }
                 }
                 .hideKeyboardOnTap()

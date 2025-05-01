@@ -63,6 +63,11 @@ struct ReceiveListView: View {
                         }
                     }
                 }
+                VStack {
+                    Spacer()
+                    AdMobBannerView()
+                        .frame(width: 320, height: 50)
+                }
             }
             .task {
                 await loadData()

@@ -6,6 +6,15 @@
 //
 
 import SwiftUI
+import GoogleMobileAds
+
+class AppDelegate: UIResponder, UIApplicationDelegate {
+    func application(_ application: UIApplication,
+                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        MobileAds.shared.start(completionHandler: nil)
+        return true
+    }
+}
 
 struct HomeView: View {
     @State private var showInfo = false
@@ -85,6 +94,11 @@ struct HomeView: View {
                     .background(Color("popupColor"))
                     .cornerRadius(20)
                     .shadow(radius: 5)
+                }
+                VStack {
+                    Spacer()
+                    AdMobBannerView()
+                        .frame(width: 320, height: 50)
                 }
             }
         }

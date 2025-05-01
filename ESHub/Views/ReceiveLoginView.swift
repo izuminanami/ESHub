@@ -45,6 +45,11 @@ struct ReceiveLoginView: View {
                             .foregroundColor(.white)
                     }
                 }
+                VStack {
+                    Spacer()
+                    AdMobBannerView()
+                        .frame(width: 320, height: 50)
+                }
             }
             .hideKeyboardOnTap()
         }

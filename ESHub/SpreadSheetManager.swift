@@ -17,7 +17,7 @@ class SpreadSheetManager: ObservableObject {
     private let apiKey = "AIzaSyDRwAUZYsTHqbqtGs3d521raNWCojMPwYs"
     private let spreadsheetId = "1tG1QgEc_RM98SjRMYmduNsdOkcQ2HNHGMRKoFKApFvg"
     private let sheetName = "ESSheet"
-    private let cellRange = "A2:O30000"
+    private let cellRange = "A2:P30000"
     @Published private(set) var spreadSheetResponse = SpreadSheetResponse(range: "", majorDimension: "", values: [[""]])
 
     @MainActor

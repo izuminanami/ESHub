@@ -33,98 +33,115 @@ struct SubmitFormView: View {
     private let error: Int = 3
     
     var body: some View {
-        NavigationStack {
-            ZStack {
-                Color("backgroundColor")
-                    .edgesIgnoringSafeArea(.all)
-                ScrollView {
-                    Spacer()
-                        .frame(height: 20)
-                    
-                    HStack {
-                        Text("ライブ名：")
-                        TextField("ライブ名を入力してください", text: $liveName)
-                            .textFieldStyle(.roundedBorder)
-                    }
-                    .padding(.horizontal)
-                    
-                    Spacer()
-                        .frame(height: 20)
-                    
-                    HStack {
-                        Text("バンド名：")
-                        TextField("バンド名を入力してください", text: $bandName)
-                            .textFieldStyle(.roundedBorder)
-                    }
-                    .padding(.horizontal)
-                    
-                    HStack(spacing: 40) {
-                        Text("曲名")
-                        Text("時間")
-                        Text("音響要望")
-                        Text("照明要望")
-                    }
-                    .padding()
-                    
-                    ForEach($songs) { $song in
+        GeometryReader { geometry in
+            let formWidth = geometry.size.width / 1.5
+            let titleFormWidth = geometry.size.width / 5
+            let requestFormWidth = geometry.size.width / 4
+            NavigationStack {
+                ZStack {
+                    Color("backgroundColor")
+                        .edgesIgnoringSafeArea(.all)
+                    ScrollView {
+                        Spacer()
+                            .frame(height: 20)
+                        
                         HStack {
-                            TextField("曲名", text: $song.title)
+                            Text("ライブ名：")
+                            TextField("伝えられたライブ名を入力してください", text: $liveName)
                                 .textFieldStyle(.roundedBorder)
-                            Button("\(song.minute)分 \(song.second)秒") {
-                                selectedSong = song.id
-                                withAnimation {
-                                    showPicker = true
+                                .frame(width: formWidth)
+                        }
+                        .padding(.horizontal)
+                        
+                        Spacer()
+                            .frame(height: 20)
+                        
+                        HStack {
+                            Text("バンド名：")
+                            TextField("バンド名を入力してください", text: $bandName)
+                                .textFieldStyle(.roundedBorder)
+                                .frame(width: formWidth)
+                        }
+                        .padding(.horizontal)
+                        
+                        HStack {
+                            Spacer()
+                                .frame(width: 20)
+                            Text("曲名")
+                                .frame(width: titleFormWidth, alignment: .leading)
+                            Text("時間")
+                                .frame(width: 80, alignment: .leading)
+                            Text("音響要望")
+                                .frame(width: requestFormWidth, alignment: .leading)
+                            Text("照明要望")
+                                .frame(width: requestFormWidth, alignment: .leading)
+                        }
+                        .padding()
+                        
+                        ForEach($songs) { $song in
+                            HStack {
+                                TextField("曲名", text: $song.title)
+                                    .textFieldStyle(.roundedBorder)
+                                    .frame(width: titleFormWidth)
+                                Button("\(song.minute)分\(song.second)秒") {
+                                    selectedSong = song.id
+                                    withAnimation {
+                                        showPicker = true
+                                    }
                                 }
+                                .foregroundColor(Color("primaryButtonColor"))
+                                .frame(width: 80)
+                                TextField("音響要望", text: $song.sound)
+                                    .textFieldStyle(.roundedBorder)
+                                    .frame(width: requestFormWidth)
+                                TextField("照明要望", text: $song.lighting)
+                                    .textFieldStyle(.roundedBorder)
+                                    .frame(width: requestFormWidth)
                             }
-                            .foregroundColor(Color("primaryButtonColor"))
-                            TextField("音響", text: $song.sound)
-                                .textFieldStyle(.roundedBorder)
-                            TextField("照明", text: $song.lighting)
-                                .textFieldStyle(.roundedBorder)
+                            .padding(.horizontal)
                         }
-                        .padding(.horizontal)
-                    }
-                    
-                    Spacer()
-                        .frame(height: 20)
-                    
-                    Text("バンドメンバー")
-                    
-                    ForEach($members) { $member in
-                        HStack {
-                            Text(member.role)
-                                .frame(width: 50, alignment: .leading)
-                            Text(":")
-                            TextField("いない場合は空欄", text: $member.name)
-                                .textFieldStyle(.roundedBorder)
+                        
+                        Spacer()
+                            .frame(height: 20)
+                        
+                        Text("バンドメンバー")
+                        Text("バンドリーダーの名前の前に⭐︎をつけてください")
+                        
+                        ForEach($members) { $member in
+                            HStack {
+                                Text(member.role)
+                                    .frame(width: 50, alignment: .leading)
+                                Text(":")
+                                TextField("いない場合は空欄", text: $member.name)
+                                    .textFieldStyle(.roundedBorder)
+                                    .frame(width: formWidth)
+                            }
+                            .padding(.horizontal)
                         }
-                        .padding(.horizontal)
-                    }
-                    
-                    // ToDoセット図を実装
-                    
-                    Spacer()
-                        .frame(height: 20)
-                    
-                    Text("SE")
-                    Picker("", selection: $se) {
-                        ForEach(["あり", "なし"], id: \.self) { Text("\($0)") }
-                    }
-                    .pickerStyle(.segmented)
-                    .frame(width: 100)
-                    
-                    Spacer()
-                        .frame(height: 20)
-                    
-                    Text("その他")
-                    TextField("その他要望があれば入力してください", text: $otherRequest)
-                        .textFieldStyle(.roundedBorder)
-                        .padding(.horizontal)
-                    
-                    Spacer()
-                        .frame(height: 20)
-                    
-                    NavigationLink(destination: SubmitCompleteView(), isActive: $isSubmitted) {
+                        
+                        // ToDoセット図を実装
+                        
+                        Spacer()
+                            .frame(height: 20)
+                        
+                        Text("SE")
+                        Picker("", selection: $se) {
+                            ForEach(["あり", "なし"], id: \.self) { Text("\($0)") }
+                        }
+                        .pickerStyle(.segmented)
+                        .frame(width: 100)
+                        
+                        Spacer()
+                            .frame(height: 20)
+                        
+                        Text("その他")
+                        TextField("その他要望があれば入力してください", text: $otherRequest)
+                            .textFieldStyle(.roundedBorder)
+                            .frame(width: formWidth)
+                        
+                        Spacer()
+                            .frame(height: 20)
+                        
                         Button{
                             sendData()
                             isSubmitted = true
@@ -136,52 +153,58 @@ struct SubmitFormView: View {
                                 .overlay(Text("提出").font(.title))
                                 .foregroundColor(.white)
                         }
-                    }
-                }
-                if showPicker {
-                    Color.black.opacity(0.3)
-                        .edgesIgnoringSafeArea(.all)
-                        .onTapGesture {
-                            showPicker = false // 背景タップでも閉じられるように
+                        .navigationDestination(isPresented: $isSubmitted) {
+                            SubmitCompleteView()
                         }
-                    if let index = songs.firstIndex(where: { $0.id == selectedSong }) {
-                        VStack(spacing: 20) {
-                            HStack(spacing: 30) {
-                                Picker("分", selection: $songs[index].minute) {
-                                    ForEach(0 ..< 20, id: \.self) { Text("\($0)分") }
-                                }
-                                .pickerStyle(.wheel)
-                                .frame(width: 100)
-                                .clipped()
-                                
-                                Picker("秒", selection: $songs[index].second) {
-                                    ForEach([0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55], id: \.self) { Text("\($0)秒") }
-                                }
-                                .pickerStyle(.wheel)
-                                .frame(width: 100)
-                                .clipped()
+                    }
+                    if showPicker {
+                        Color.black.opacity(0.3)
+                            .edgesIgnoringSafeArea(.all)
+                            .onTapGesture {
+                                showPicker = false // 背景タップでも閉じられるように
                             }
-                            Button("完了") {
-                                withAnimation { // ToDo機能してない
-                                    showPicker = false
+                        if let index = songs.firstIndex(where: { $0.id == selectedSong }) {
+                            VStack(spacing: 20) {
+                                HStack(spacing: 30) {
+                                    Picker("分", selection: $songs[index].minute) {
+                                        ForEach(0 ..< 20, id: \.self) { Text("\($0)分") }
+                                    }
+                                    .pickerStyle(.wheel)
+                                    .frame(width: 100)
+                                    .clipped()
+                                    
+                                    Picker("秒", selection: $songs[index].second) {
+                                        ForEach([0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55], id: \.self) { Text("\($0)秒") }
+                                    }
+                                    .pickerStyle(.wheel)
+                                    .frame(width: 100)
+                                    .clipped()
                                 }
+                                Button("完了") {
+                                    withAnimation { // ToDo機能してない
+                                        showPicker = false
+                                    }
+                                }
+                                .frame(width: 60, height: 40)
+                                .shadow(radius: 5)
+                                .background(Color("primaryButtonColor"))
+                                .foregroundColor(.white)
+                                .cornerRadius(10)
                             }
-                            .frame(width: 60, height: 40)
+                            .frame(width: 300, height: 400)
+                            .background(Color("popupColor"))
+                            .cornerRadius(20)
                             .shadow(radius: 5)
-                            .background(Color("primaryButtonColor"))
-                            .foregroundColor(.white)
-                            .cornerRadius(10)
                         }
-                        .frame(width: 300, height: 400)
-                        .background(Color("popupColor"))
-                        .cornerRadius(20)
-                        .shadow(radius: 5)
                     }
                 }
+                .hideKeyboardOnTap()
             }
+            .navigationTitle("ESフォーム")
+            .frame(width: geometry.size.width, height: geometry.size.height)
         }
-        .navigationTitle("ESフォーム")
     }
+    
     func sendData() {
         guard !liveName.isEmpty, !bandName.isEmpty else {
             print("ライブ名とバンド名を入力してください")
@@ -197,7 +220,13 @@ struct SubmitFormView: View {
         formatter.timeZone = TimeZone(identifier: "Asia/Tokyo")
         let dateString = formatter.string(from: Date())
         
-        var es: [String: Any] = [
+        let totalSeconds = songs.reduce(0) { $0 + ($1.minute * 60 + $1.second) }
+        let hours = totalSeconds / 3600
+        let minutes = (totalSeconds % 3600) / 60
+        let seconds = totalSeconds % 60
+        let alltime = String(format: "%d:%02d:%02d", hours, minutes, seconds)
+        
+        let es: [String: Any] = [
             "date": dateString,
             "liveName": liveName,
             "bandName": bandName,
@@ -212,7 +241,8 @@ struct SubmitFormView: View {
             "title": songs.map {"\($0.title)"}.joined(separator: ", "),
             "time": songs.map { String(format: "%d:%02d", $0.minute, $0.second) }.joined(separator: ", "),
             "sound": songs.map {"\($0.sound)"}.joined(separator: ", "),
-            "lighting": songs.map {"\($0.lighting)"}.joined(separator: ", ")
+            "lighting": songs.map {"\($0.lighting)"}.joined(separator: ", "),
+            "allTime": alltime
         ]
         
         let entrySheets = [es]

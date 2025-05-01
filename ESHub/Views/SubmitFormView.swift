@@ -10,6 +10,7 @@ import Alamofire
 import SwiftyJSON
 
 struct SubmitFormView: View {
+    @ObservedObject  var interstitial = AdMobInterstitialView()
     @State private var showPicker = false
     @State private var isSubmitted = false
     @State private var liveName: String = ""
@@ -144,6 +145,7 @@ struct SubmitFormView: View {
                         
                         Button{
                             sendData()
+                            interstitial.presentInterstitial()
                             isSubmitted = true
                         } label: {
                             RoundedRectangle(cornerRadius: 20)
@@ -156,6 +158,10 @@ struct SubmitFormView: View {
                         .navigationDestination(isPresented: $isSubmitted) {
                             SubmitCompleteView()
                         }
+                        .onAppear() {
+                            interstitial.loadInterstitial()
+                        }.disabled(!interstitial.interstitialLoaded)
+                        
                         Spacer()
                             .frame(height: 70)
                     }

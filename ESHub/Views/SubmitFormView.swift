@@ -29,6 +29,9 @@ struct SubmitFormView: View {
         BandMember(role: "Dr.", name: ""),
         BandMember(role: "Key.", name: "")
     ]
+    @State private var showAlert = false
+    @State private var alertMessage = ""
+    @State private var isButtonEnabled = true // 提出ボタン連打対策
     
     private let url = "https://script.google.com/macros/s/AKfycbzR2gu1kHuewcT2t-QDAX_t0VGMysK8q1twXlRE-3hKcCmTb4BxPvdQSPPyzKDZ1bDI7A/exec"
     private let error: Int = 3
@@ -106,7 +109,9 @@ struct SubmitFormView: View {
                             .frame(height: 20)
                         
                         Text("バンドメンバー")
-                        Text("バンドリーダーの名前の前に⭐︎をつけてください")
+                        Text("リーダーの名前の前に⭐︎をつけてください")
+                            .font(.subheadline)
+                            .foregroundColor(.gray)
                         
                         ForEach($members) { $member in
                             HStack {
@@ -144,9 +149,9 @@ struct SubmitFormView: View {
                             .frame(height: 20)
                         
                         Button{
-                            sendData()
-                            interstitial.presentInterstitial()
-                            isSubmitted = true
+                            if isButtonEnabled {
+                                sendData()
+                            }
                         } label: {
                             RoundedRectangle(cornerRadius: 20)
                                 .fill(Color("primaryButtonColor"))
@@ -154,6 +159,9 @@ struct SubmitFormView: View {
                                 .shadow(radius: 5)
                                 .overlay(Text("提出").font(.title))
                                 .foregroundColor(.white)
+                        }
+                        .alert(isPresented: $showAlert) {
+                            Alert(title: Text("提出エラー"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
                         }
                         .navigationDestination(isPresented: $isSubmitted) {
                             SubmitCompleteView()
@@ -205,6 +213,13 @@ struct SubmitFormView: View {
                             .shadow(radius: 5)
                         }
                     }
+                    
+                    if isButtonEnabled == false {
+                        Color.black.opacity(0.5)
+                            .edgesIgnoringSafeArea(.all)
+                        ProgressView("Please wait...")
+                    }
+                    
                     VStack {
                         Spacer()
                         AdMobBannerView()
@@ -219,12 +234,24 @@ struct SubmitFormView: View {
     }
     
     func sendData() {
-        guard !liveName.isEmpty, !bandName.isEmpty else {
-            print("ライブ名とバンド名を入力してください")
+        self.isButtonEnabled = false // 提出ボタン無効に。
+            
+            guard !liveName.isEmpty else {
+            alertMessage = "ライブ名を入力してください"
+            showAlert = true
+            isButtonEnabled = true // 提出ボタン使用可能に。
+            return
+        }
+        guard !bandName.isEmpty else {
+            alertMessage = "バンド名を入力してください"
+            showAlert = true
+            isButtonEnabled = true // 提出ボタン使用可能に。
             return
         }
         guard songs.contains(where: { !$0.title.isEmpty }) else {
-            print("少なくとも1曲は入力してください")
+            alertMessage = "少なくとも1曲は入力してください"
+            showAlert = true
+            isButtonEnabled = true // 提出ボタン使用可能に。
             return
         }
         
@@ -268,9 +295,18 @@ struct SubmitFormView: View {
             switch response.result {
             case .success(let str):
                 print("成功: \(str)")
+                
+                interstitial.presentInterstitial() // インタースティシャル広告表示
+                isSubmitted = true // SubmitCompleteViewへ遷移
+                
             case .failure(let error):
                 print("エラー: \(error)")
+                
+                alertMessage = "提出失敗：\(error.localizedDescription)"
+                showAlert = true
+                
             }
+            isButtonEnabled = true // 提出ボタン使用可能に。
         }
     }
 }

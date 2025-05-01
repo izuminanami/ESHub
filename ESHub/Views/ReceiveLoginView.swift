@@ -46,6 +46,7 @@ struct ReceiveLoginView: View {
                     }
                 }
             }
+            .hideKeyboardOnTap()
         }
         .navigationTitle("ログイン")
     }

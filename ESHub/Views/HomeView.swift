@@ -45,23 +45,13 @@ struct HomeView: View {
                     NavigationLink{
                         ReceiveLoginView()
                     } label: {
-                        RoundedRectangle(cornerRadius: 20)
-                            .fill(Color("primaryButtonColor"))
-                            .frame(width: 300, height: 150)
-                            .shadow(radius: 5)
-                            .overlay(Text("ESを集める").font(.title))
-                            .foregroundColor(.white)
+                        LargeButtonLabelComponent(text: "ESを集める", color: "primaryButtonColor")
                     }
                     
                     NavigationLink{
                         SubmitFormView()
                     } label: {
-                        RoundedRectangle(cornerRadius: 20)
-                            .fill(Color("popupColor"))
-                            .frame(width: 300, height: 150)
-                            .shadow(radius: 5)
-                            .overlay(Text("ESを提出する").font(.title))
-                            .foregroundColor(Color("textColor"))
+                        LargeButtonLabelComponent(text: "ESを提出する", color: "popupColor")
                     }
                 }
                 if showInfo {

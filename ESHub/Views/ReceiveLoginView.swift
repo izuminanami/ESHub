@@ -25,24 +25,19 @@ struct ReceiveLoginView: View {
                         .foregroundColor(.gray)
                         .padding()
                     
-                    Text("あいことば")
-                    TextField("あいことばを入力してください", text: $watchWord)
-                        .textFieldStyle(.roundedBorder)
-                        .padding()
+//                    Text("あいことば")
+//                    TextField("あいことばを入力してください", text: $watchWord)
+//                        .textFieldStyle(.roundedBorder)
+//                        .padding()
+//                    
+//                    Text("容易に推測されるあいことばは使用しないでください。")
+//                        .foregroundColor(.gray)
+//                        .padding()
                     
-                    Text("容易に推測されるあいことばは使用しないでください。")
-                        .foregroundColor(.gray)
-                        .padding()
-                    
-                    NavigationLink{
+                    NavigationLink {
                         ReceiveListView(liveName: liveName)
                     } label: {
-                        RoundedRectangle(cornerRadius: 20)
-                            .fill(Color("primaryButtonColor"))
-                            .frame(width: 150, height: 50)
-                            .shadow(radius: 5)
-                            .overlay(Text("ログイン/作成").font(.title3))
-                            .foregroundColor(.white)
+                        SmallButtonLabelComponent(text: "ログイン")
                     }
                 }
                 VStack {

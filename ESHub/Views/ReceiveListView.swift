@@ -54,12 +54,7 @@ struct ReceiveListView: View {
                         NavigationLink {
                             
                         } label: {
-                            RoundedRectangle(cornerRadius: 20)
-                                .fill(Color("primaryButtonColor"))
-                                .frame(width: 100, height: 50)
-                                .shadow(radius: 5)
-                                .overlay(Text("出力").font(.title))
-                                .foregroundColor(.white)
+                            SmallButtonLabelComponent(text: "出力")
                         }
                     }
                 }
@@ -78,7 +73,7 @@ struct ReceiveListView: View {
             EditButton()
         }
     }
-
+    
     private func loadData() async {
         isLoading = true
         do {
@@ -99,12 +94,12 @@ struct ReceiveListView: View {
         }
         isLoading = false
     }
-
+    
     private func moveItem(from source: IndexSet, to destination: Int) {
         filteredRows.move(fromOffsets: source, toOffset: destination)
         saveOrder()
     }
-
+    
     private func saveOrder() {
         let order = filteredRows.compactMap { $0[safe: 2] }
         UserDefaults.standard.set(order, forKey: orderKey)

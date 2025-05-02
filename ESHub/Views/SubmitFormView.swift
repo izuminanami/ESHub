@@ -153,12 +153,7 @@ struct SubmitFormView: View {
                                 sendData()
                             }
                         } label: {
-                            RoundedRectangle(cornerRadius: 20)
-                                .fill(Color("primaryButtonColor"))
-                                .frame(width: 100, height: 50)
-                                .shadow(radius: 5)
-                                .overlay(Text("提出").font(.title))
-                                .foregroundColor(.white)
+                            SmallButtonLabelComponent(text: "提出")
                         }
                         .alert(isPresented: $showAlert) {
                             Alert(title: Text("提出エラー"), message: Text(alertMessage), dismissButton: .default(Text("OK")))

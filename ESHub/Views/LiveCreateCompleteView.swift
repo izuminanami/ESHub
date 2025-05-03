@@ -30,24 +30,24 @@ struct LiveCreateCompleteView: View {
                     Text("作成完了")
                         .font(.title)
                     
-                    Button {
-                        isShareSheetPresentedForPerformers = true
-                    } label: {
-                        Text("出演希望者に伝える").font(.title3)
-                            .foregroundColor(Color("primaryButtonColor"))
-                    }
-                    .sheet(isPresented: $isShareSheetPresentedForPerformers) {
-                        ShareSheet(activityItems: ["「"+liveName+"」でES募集を開始しました。提出お願いします！\nhttps://apps.apple.com/jp/app/eshub/id6745217075"])
-                    }
-                    
-                    Button {
-                        isShareSheetPresentedForCoOrganizers = true
-                    } label: {
-                        Text("ライブ名と合言葉を共有").font(.title3)
-                            .foregroundColor(Color("primaryButtonColor"))
-                    }
-                    .sheet(isPresented: $isShareSheetPresentedForCoOrganizers) {
-                        ShareSheet(activityItems: ["ライブ名："+liveName+"\n合言葉："+watchWord])
+                    HStack {
+                        Button {
+                            isShareSheetPresentedForCoOrganizers = true
+                        } label: {
+                            MiddleButtonLabelComponent(text: "メモを共有")
+                        }
+                        .sheet(isPresented: $isShareSheetPresentedForCoOrganizers) {
+                            ShareSheet(activityItems: ["ライブ名："+liveName+"\n合言葉："+watchWord])
+                        }
+                        
+                        Button {
+                            isShareSheetPresentedForPerformers = true
+                        } label: {
+                            MiddleButtonLabelComponent(text: "告知をする")
+                        }
+                        .sheet(isPresented: $isShareSheetPresentedForPerformers) {
+                            ShareSheet(activityItems: ["「"+liveName+"」でES募集を開始しました。提出お願いします！\nhttps://apps.apple.com/jp/app/eshub/id6745217075"])
+                        }
                     }
                     
                     NavigationLink {

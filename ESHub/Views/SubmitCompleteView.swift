@@ -14,7 +14,7 @@ struct SubmitCompleteView: View {
                 Color("backgroundColor")
                     .edgesIgnoringSafeArea(.all)
                 VStack(spacing: 30) {
-                    Text("提出完了！")
+                    Text("提出完了")
                         .font(.title)
                     
                     NavigationLink{

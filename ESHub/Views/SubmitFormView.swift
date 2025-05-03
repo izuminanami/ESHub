@@ -34,7 +34,6 @@ struct SubmitFormView: View {
     @State private var isButtonEnabled = true // 提出ボタン連打対策
     
     private let url = "https://script.google.com/macros/s/AKfycbzR2gu1kHuewcT2t-QDAX_t0VGMysK8q1twXlRE-3hKcCmTb4BxPvdQSPPyzKDZ1bDI7A/exec"
-    private let error: Int = 3
     
     var body: some View {
         GeometryReader { geometry in
@@ -149,9 +148,7 @@ struct SubmitFormView: View {
                             .frame(height: 20)
                         
                         Button{
-                            if isButtonEnabled {
-                                sendData()
-                            }
+                            sendData()
                         } label: {
                             SmallButtonLabelComponent(text: "提出")
                         }
@@ -229,79 +226,81 @@ struct SubmitFormView: View {
     }
     
     func sendData() {
-        self.isButtonEnabled = false // 提出ボタン無効に。
+        if isButtonEnabled {
+            self.isButtonEnabled = false // 提出ボタン無効に。
             
             guard !liveName.isEmpty else {
-            alertMessage = "ライブ名を入力してください"
-            showAlert = true
-            isButtonEnabled = true // 提出ボタン使用可能に。
-            return
-        }
-        guard !bandName.isEmpty else {
-            alertMessage = "バンド名を入力してください"
-            showAlert = true
-            isButtonEnabled = true // 提出ボタン使用可能に。
-            return
-        }
-        guard songs.contains(where: { !$0.title.isEmpty }) else {
-            alertMessage = "少なくとも1曲は入力してください"
-            showAlert = true
-            isButtonEnabled = true // 提出ボタン使用可能に。
-            return
-        }
-        
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy/MM/dd HH:mm"
-        formatter.timeZone = TimeZone(identifier: "Asia/Tokyo")
-        let dateString = formatter.string(from: Date())
-        
-        let totalSeconds = songs.reduce(0) { $0 + ($1.minute * 60 + $1.second) }
-        let hours = totalSeconds / 3600
-        let minutes = (totalSeconds % 3600) / 60
-        let seconds = totalSeconds % 60
-        let alltime = String(format: "%d:%02d:%02d", hours, minutes, seconds)
-        
-        let es: [String: Any] = [
-            "date": dateString,
-            "liveName": liveName,
-            "bandName": bandName,
-            "vo": members.count > 0 ? members[0].name : "",
-            "gt1": members.count > 1 ? members[1].name : "",
-            "gt2": members.count > 2 ? members[2].name : "",
-            "ba": members.count > 3 ? members[3].name : "",
-            "dr": members.count > 4 ? members[4].name : "",
-            "key": members.count > 5 ? members[5].name : "",
-            "se": se,
-            "otherRequest": otherRequest,
-            "title": songs.map {"\($0.title)"}.joined(separator: ", "),
-            "time": songs.map { String(format: "%d:%02d", $0.minute, $0.second) }.joined(separator: ", "),
-            "sound": songs.map {"\($0.sound)"}.joined(separator: ", "),
-            "lighting": songs.map {"\($0.lighting)"}.joined(separator: ", "),
-            "allTime": alltime
-        ]
-        
-        let entrySheets = [es]
-        
-        AF.request(url,
-                   method: .post,
-                   parameters: ["entrySheets": entrySheets],
-                   encoding: JSONEncoding.default
-        ).responseString { response in
-            switch response.result {
-            case .success(let str):
-                print("成功: \(str)")
-                
-                interstitial.presentInterstitial() // インタースティシャル広告表示
-                isSubmitted = true // SubmitCompleteViewへ遷移
-                
-            case .failure(let error):
-                print("エラー: \(error)")
-                
-                alertMessage = "提出失敗：\(error.localizedDescription)"
+                alertMessage = "ライブ名を入力してください"
                 showAlert = true
-                
+                isButtonEnabled = true // 提出ボタン使用可能に。
+                return
             }
-            isButtonEnabled = true // 提出ボタン使用可能に。
+            guard !bandName.isEmpty else {
+                alertMessage = "バンド名を入力してください"
+                showAlert = true
+                isButtonEnabled = true // 提出ボタン使用可能に。
+                return
+            }
+            guard songs.contains(where: { !$0.title.isEmpty }) else {
+                alertMessage = "少なくとも1曲は入力してください"
+                showAlert = true
+                isButtonEnabled = true // 提出ボタン使用可能に。
+                return
+            }
+            
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy/MM/dd HH:mm"
+            formatter.timeZone = TimeZone(identifier: "Asia/Tokyo")
+            let dateString = formatter.string(from: Date())
+            
+            let totalSeconds = songs.reduce(0) { $0 + ($1.minute * 60 + $1.second) }
+            let hours = totalSeconds / 3600
+            let minutes = (totalSeconds % 3600) / 60
+            let seconds = totalSeconds % 60
+            let alltime = String(format: "%d:%02d:%02d", hours, minutes, seconds)
+            
+            let es: [String: Any] = [
+                "date": dateString,
+                "liveName": liveName,
+                "bandName": bandName,
+                "vo": members.count > 0 ? members[0].name : "",
+                "gt1": members.count > 1 ? members[1].name : "",
+                "gt2": members.count > 2 ? members[2].name : "",
+                "ba": members.count > 3 ? members[3].name : "",
+                "dr": members.count > 4 ? members[4].name : "",
+                "key": members.count > 5 ? members[5].name : "",
+                "se": se,
+                "otherRequest": otherRequest,
+                "title": songs.map {"\($0.title)"}.joined(separator: ", "),
+                "time": songs.map { String(format: "%d:%02d", $0.minute, $0.second) }.joined(separator: ", "),
+                "sound": songs.map {"\($0.sound)"}.joined(separator: ", "),
+                "lighting": songs.map {"\($0.lighting)"}.joined(separator: ", "),
+                "allTime": alltime
+            ]
+            
+            let entrySheets = [es]
+            
+            AF.request(url,
+                       method: .post,
+                       parameters: ["entrySheets": entrySheets],
+                       encoding: JSONEncoding.default
+            ).responseString { response in
+                switch response.result {
+                case .success(let str):
+                    print("成功: \(str)")
+                    
+                    interstitial.presentInterstitial() // インタースティシャル広告表示
+                    isSubmitted = true // SubmitCompleteViewへ遷移
+                    
+                case .failure(let error):
+                    print("エラー: \(error)")
+                    
+                    alertMessage = "提出失敗：\(error.localizedDescription)"
+                    showAlert = true
+                    
+                }
+                isButtonEnabled = true // 提出ボタン使用可能に。
+            }
         }
     }
 }

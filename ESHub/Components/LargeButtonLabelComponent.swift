@@ -19,7 +19,7 @@ public struct LargeButtonLabelComponent: View {
     public var body: some View {
         RoundedRectangle(cornerRadius: 20)
             .fill(Color(color))
-            .frame(width: UIScreen.main.bounds.size.width/1.25, height: UIScreen.main.bounds.size.height/5)
+            .frame(width: UIScreen.main.bounds.size.width / 1.25, height: UIScreen.main.bounds.size.height / 5)
             .shadow(radius: 5)
             .overlay(Text(text).font(.title))
             .foregroundColor(.white)

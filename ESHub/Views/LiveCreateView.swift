@@ -18,17 +18,6 @@ struct LiveCreateView: View {
     @State private var alertMessage = ""
     @State private var isButtonEnabled = true // 提出ボタン連打対策
     private let url = "https://script.google.com/macros/s/AKfycbya3qm5dfs4yGttbQvCZFYjS-wxZ13bYwj8tsSF4QTis1vve7j2zgAv2NSszQ9G93vMPQ/exec"
-    private let error: Int = 3
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     var body: some View {
         NavigationStack {

@@ -39,7 +39,7 @@ struct ReceiveListView: View {
                                 .foregroundColor(Color("primaryButtonColor"))
                         }
                         .sheet(isPresented: $isShareSheetPresentedForPerformers) {
-                            ShareSheet(activityItems: ["「"+liveName+"」でES募集を開始しました。提出お願いします！\nhttps://apps.apple.com/jp/app/eshub/id6745217075"])
+                            ShareSheet(activityItems: ["「"+liveName+"」でES募集を開始しています。提出お願いします！\nhttps://apps.apple.com/jp/app/eshub/id6745217075"])
                         }
                     }
                 } else {

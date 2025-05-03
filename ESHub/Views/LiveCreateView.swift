@@ -11,6 +11,7 @@ import SwiftyJSON
 
 struct LiveCreateView: View {
     @ObservedObject  var interstitial = AdMobInterstitialView()
+    @StateObject private var spreadSheetManager = LiveSheetManager()
     @State private var isCreated = false
     @State private var liveName: String = ""
     @State private var watchWord: String = ""
@@ -82,6 +83,14 @@ struct LiveCreateView: View {
                 }
             }
             .hideKeyboardOnTap()
+            .task {
+                do {
+                    try await spreadSheetManager.fetchGoogleSheetData()
+                    print("success")
+                } catch {
+                    print("error: \(error)")
+                }
+            }
         }
         .navigationTitle("ライブ作成")
     }
@@ -98,6 +107,12 @@ struct LiveCreateView: View {
             }
             guard !watchWord.isEmpty else {
                 alertMessage = "合言葉を入力してください"
+                showAlert = true
+                isButtonEnabled = true // 提出ボタン使用可能に。
+                return
+            }
+            if spreadSheetManager.spreadSheetResponse.values.contains(where: { $0[0] == liveName }) {
+                alertMessage = "入力されたライブ名は既に存在しています"
                 showAlert = true
                 isButtonEnabled = true // 提出ボタン使用可能に。
                 return

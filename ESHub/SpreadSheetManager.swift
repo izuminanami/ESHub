@@ -35,7 +35,7 @@ class ESSheetManager: ObservableObject {
 }
 
 class LiveSheetManager: ObservableObject {
-    private let apiKey = "AIzaSyDRwAUZYsTHqbqtGs3d521raNWCojMPwYs"
+    private let apiKey = "AIzaSyBtZtPcZ0s3QUT1gQCjpihU-vWo5z0BK4s"
     private let spreadsheetId = "1lyTjgLcxPdWI_kAnEkQtwfD2JTuw6jm102uQvjr6XzA"
     private let sheetName = "LiveList"
     private let cellRange = "A2:B10000"

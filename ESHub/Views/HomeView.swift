@@ -23,21 +23,23 @@ struct HomeView: View {
             ZStack {
                 Color("backgroundColor")
                     .edgesIgnoringSafeArea(.all)
-                VStack(spacing: 50) {
+                VStack(spacing: 30) {
                     HStack {
                         Spacer()
-                        
-                        Text("How to use")
-                            .foregroundColor(Color("emphasisColor"))
                         
                         Button {
                             withAnimation {
                                 showInfo = true
                             }
                         } label: {
-                            Image(systemName: "questionmark.circle")
-                                .foregroundColor(Color("emphasisColor"))
-                                .font(.system(size: 30))
+                            HStack {
+                                Text("How to use")
+                                    .foregroundColor(Color("emphasisColor"))
+                                
+                                Image(systemName: "questionmark.circle")
+                                    .foregroundColor(Color("emphasisColor"))
+                                    .font(.system(size: 30))
+                            }
                         }
                     }
                     .padding(.horizontal, 50)
@@ -79,9 +81,20 @@ struct HomeView: View {
                                     .font(.system(size: 30))
                             }
                         }
-                        Text("使い方")
+                        VStack(alignment: .leading, spacing: 10) {
+                            Text("【ライブ主催者の方へ】")
+                                .font(.headline)
+                            
+                            Text("「ライブを開催する」からライブ名と合言葉を設定してください。\n設定後、ライブ名を出演希望者に伝えてください。\n集まったESは「ESを確認する」から管理できます。\n")
+                            
+                            Text("【出演希望者の方へ】")
+                                .font(.headline)
+                            
+                            Text("「ESを提出する」から主催者に伝えられたライブ名を入力し、必要な情報を記入してESを提出してください。")
+                        }
+                        .font(.body)
+                        .multilineTextAlignment(.leading)
                         
-                        Text("画面を横にすると入力や表示がしやすいです。")
                         
                         Spacer()
                     }

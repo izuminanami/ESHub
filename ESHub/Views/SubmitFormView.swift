@@ -220,7 +220,7 @@ struct SubmitFormView: View {
                 }
                 .hideKeyboardOnTap()
             }
-            .navigationTitle("ESフォーム")
+            .navigationTitle("ESフォーム(横画面推奨)")
             .frame(width: geometry.size.width, height: geometry.size.height)
         }
     }

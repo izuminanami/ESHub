@@ -11,6 +11,7 @@ import SwiftyJSON
 
 struct SubmitFormView: View {
     @ObservedObject  var interstitial = AdMobInterstitialView()
+    @StateObject private var spreadSheetManager = LiveSheetManager()
     @State private var showPicker = false
     @State private var isSubmitted = false
     @State private var liveName: String = ""
@@ -219,6 +220,14 @@ struct SubmitFormView: View {
                     }
                 }
                 .hideKeyboardOnTap()
+                .task {
+                    do {
+                        try await spreadSheetManager.fetchGoogleSheetData()
+                        print("success")
+                    } catch {
+                        print("error: \(error)")
+                    }
+                }
             }
             .navigationTitle("ESフォーム(横画面推奨)")
             .frame(width: geometry.size.width, height: geometry.size.height)
@@ -243,6 +252,12 @@ struct SubmitFormView: View {
             }
             guard songs.contains(where: { !$0.title.isEmpty }) else {
                 alertMessage = "少なくとも1曲は入力してください"
+                showAlert = true
+                isButtonEnabled = true // 提出ボタン使用可能に。
+                return
+            }
+            if !spreadSheetManager.spreadSheetResponse.values.contains(where: { $0[0] == liveName }) {
+                alertMessage = "入力されたライブ名は存在しません"
                 showAlert = true
                 isButtonEnabled = true // 提出ボタン使用可能に。
                 return

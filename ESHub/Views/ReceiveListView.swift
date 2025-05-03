@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ReceiveListView: View {
-    @StateObject private var spreadSheetManager = SpreadSheetManager()
+    @StateObject private var spreadSheetManager = ESSheetManager()
     @State private var isLoading = true
     @State private var filteredRows: [[String]] = []
     let liveName: String

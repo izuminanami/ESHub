@@ -43,9 +43,15 @@ struct HomeView: View {
                     .padding(.horizontal, 50)
                     
                     NavigationLink{
+                        LiveCreateView()
+                    } label: {
+                        LargeButtonLabelComponent(text: "ライブを開催する", color: "primaryButtonColor")
+                    }
+                    
+                    NavigationLink{
                         ReceiveLoginView()
                     } label: {
-                        LargeButtonLabelComponent(text: "ESを集める", color: "primaryButtonColor")
+                        LargeButtonLabelComponent(text: "ESを確認する", color: "primaryButtonColor")
                     }
                     
                     NavigationLink{

@@ -35,8 +35,7 @@ struct ReceiveListView: View {
                         Button {
                             isShareSheetPresentedForPerformers = true
                         } label: {
-                            Text("出演希望者に伝える").font(.title3)
-                                .foregroundColor(Color("primaryButtonColor"))
+                            MiddleButtonLabelComponent(text: "告知をする")
                         }
                         .sheet(isPresented: $isShareSheetPresentedForPerformers) {
                             ShareSheet(activityItems: ["「"+liveName+"」でES募集を開始しています。提出お願いします！\nhttps://apps.apple.com/jp/app/eshub/id6745217075"])
@@ -64,7 +63,7 @@ struct ReceiveListView: View {
                         .scrollContentBackground(.hidden)
                         .background(Color("backgroundColor"))
                         
-                        NavigationLink {
+                        Button {
                             
                         } label: {
                             SmallButtonLabelComponent(text: "出力")

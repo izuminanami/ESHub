@@ -83,11 +83,13 @@ struct ReceiveDetailView: View {
                     
                     if !row[15].isEmpty {
                         HStack {
+                            Spacer()
+                                .frame(width: geometry.size.width / 15)
+                            
                             Text("合計時間：" + row[15])
                             
                             Spacer()
                         }
-                        .padding()
                     }
                     
                     Spacer()

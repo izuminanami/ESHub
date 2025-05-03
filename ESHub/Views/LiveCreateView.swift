@@ -29,20 +29,24 @@ struct LiveCreateView: View {
                         .frame(height: 20)
                     
                     Text("ライブ名")
+                        .font(.title2)
                     TextField("ex) 2025/5/1_ES大学軽音部_新歓ライブ", text: $liveName)
                         .textFieldStyle(.roundedBorder)
                         .padding()
                     
                     Text("日付、団体名、ライブタイトルなどを含めて被らないものにしてください")
+                        .font(.subheadline)
                         .foregroundColor(.gray)
                         .padding()
                     
-                    Text("あいことば")
-                    TextField("あいことばを入力してください", text: $watchWord)
+                    Text("合言葉")
+                        .font(.title2)
+                    TextField("合言葉を設定してください", text: $watchWord)
                         .textFieldStyle(.roundedBorder)
                         .padding()
                     
-                    Text("容易に推測されるあいことばは使用しないでください")
+                    Text("合言葉は集まったESを確認するのに使用します")
+                        .font(.subheadline)
                         .foregroundColor(.gray)
                         .padding()
                     
@@ -55,7 +59,7 @@ struct LiveCreateView: View {
                         Alert(title: Text("作成エラー"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
                     }
                     .navigationDestination(isPresented: $isCreated) {
-                        LiveCreateCompleteView()
+                        LiveCreateCompleteView(liveName: liveName, watchWord: watchWord)
                     }
                     .onAppear() {
                         interstitial.loadInterstitial()
@@ -93,7 +97,7 @@ struct LiveCreateView: View {
                 return
             }
             guard !watchWord.isEmpty else {
-                alertMessage = "あいことばを入力してください"
+                alertMessage = "合言葉を入力してください"
                 showAlert = true
                 isButtonEnabled = true // 提出ボタン使用可能に。
                 return

@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ReceiveListView: View {
     @StateObject private var spreadSheetManager = ESSheetManager()
+    @State private var isShareSheetPresentedForPerformers = false
     @State private var isLoading = true
     @State private var filteredRows: [[String]] = []
     let liveName: String
@@ -28,7 +29,19 @@ struct ReceiveListView: View {
                 if isLoading {
                     ProgressView("loading...")
                 } else if filteredRows.isEmpty {
-                    Text("提出されたESはありません")
+                    VStack(spacing: 30) {
+                        Text("提出されたESはありません")
+                        
+                        Button {
+                            isShareSheetPresentedForPerformers = true
+                        } label: {
+                            Text("出演希望者に伝える").font(.title3)
+                                .foregroundColor(Color("primaryButtonColor"))
+                        }
+                        .sheet(isPresented: $isShareSheetPresentedForPerformers) {
+                            ShareSheet(activityItems: ["「"+liveName+"」でES募集を開始しました。提出お願いします！\nhttps://apps.apple.com/jp/app/eshub/id6745217075"])
+                        }
+                    }
                 } else {
                     VStack {
                         List {

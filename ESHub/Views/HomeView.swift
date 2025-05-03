@@ -47,19 +47,19 @@ struct HomeView: View {
                     NavigationLink{
                         LiveCreateView()
                     } label: {
-                        LargeButtonLabelComponent(text: "ライブを開催する", color: "primaryButtonColor")
+                        LargeButtonLabelComponent(text: "ライブを開催する", fillColor: "primaryButtonColor", textColor: .white)
                     }
                     
                     NavigationLink{
                         ReceiveLoginView()
                     } label: {
-                        LargeButtonLabelComponent(text: "ESを確認する", color: "primaryButtonColor")
+                        LargeButtonLabelComponent(text: "ESを確認する", fillColor: "primaryButtonColor", textColor: .white)
                     }
                     
                     NavigationLink{
                         SubmitFormView()
                     } label: {
-                        LargeButtonLabelComponent(text: "ESを提出する", color: "popupColor")
+                        LargeButtonLabelComponent(text: "ESを提出する", fillColor: "popupColor", textColor: Color("textColor"))
                     }
                 }
                 if showInfo {

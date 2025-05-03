@@ -1,7 +1,31 @@
 {
   "images" : [
     {
-      "filename" : "icon.png",
+      "filename" : "ESHub_icon3.png",
+      "idiom" : "universal",
+      "platform" : "ios",
+      "size" : "1024x1024"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "ESHub_icon4.png",
+      "idiom" : "universal",
+      "platform" : "ios",
+      "size" : "1024x1024"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "tinted"
+        }
+      ],
+      "filename" : "ESHub_icon4 1.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"

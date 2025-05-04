@@ -11,7 +11,9 @@ struct ReceiveListView: View {
     @StateObject private var spreadSheetManager = ESSheetManager()
     @State private var isShareSheetPresentedForPerformers = false
     @State private var isLoading = true
+    @State private var isShowingActionSheet = false
     @State private var filteredRows: [[String]] = []
+    
     let liveName: String
     private let orderKey: String
     
@@ -43,6 +45,20 @@ struct ReceiveListView: View {
                     }
                 } else {
                     VStack {
+                        HStack {
+                            Spacer()
+                            
+                            Button {
+                                filteredRows.sort {
+                                    timeStringToSeconds($0[safe: 15] ?? "") < timeStringToSeconds($1[safe: 15] ?? "")
+                                }
+                                saveOrder()
+                            } label: {
+                                Text("おまかせ並べ替え")
+                                    .foregroundColor(Color("primaryButtonColor"))
+                            }
+                        }
+                        .padding()
                         List {
                             ForEach(filteredRows, id: \.self) { row in
                                 if row.count > 1 {
@@ -64,10 +80,31 @@ struct ReceiveListView: View {
                         .background(Color("backgroundColor"))
                         
                         Button {
-                            
+                            isShowingActionSheet = true
                         } label: {
                             SmallButtonLabelComponent(text: "出力")
                         }
+                        .actionSheet(isPresented: $isShowingActionSheet) {
+                            ActionSheet(
+                                title: Text(""),
+                                message: Text(""),
+                                buttons: [
+                                    .default(Text("タイムテーブルを出力")) {
+                                        
+                                    },
+                                    .default(Text("音響要望のみを出力")) {
+                                        
+                                    },
+                                    .destructive(Text("照明要望のみを出力")) {
+                                        
+                                    },
+                                    .cancel()
+                                ]
+                            )
+                        }
+                        
+                        Spacer()
+                            .frame(height: 70)
                     }
                 }
                 VStack {
@@ -115,6 +152,17 @@ struct ReceiveListView: View {
     private func saveOrder() {
         let order = filteredRows.compactMap { $0[safe: 2] }
         UserDefaults.standard.set(order, forKey: orderKey)
+    }
+    
+    private func timeStringToSeconds(_ time: String) -> Int {
+        let trimmedTime = time.trimmingCharacters(in: .whitespacesAndNewlines)
+        let components = trimmedTime.split(separator: ":")
+        guard components.count == 2,
+              let minutes = Int(components[0]),
+              let seconds = Int(components[1]) else {
+            return Int.min // 無効な値は最初に回す
+        }
+        return minutes * 60 + seconds
     }
 }
 

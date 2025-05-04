@@ -93,12 +93,14 @@ struct ReceiveListView: View {
                                     NavigationLink {
                                         ReceiveDetailView(row: row)
                                     } label: {
-                                        Text(row[2])
-                                        Spacer()
-                                            .padding()
-                                        Text(row[15])
-                                            .font(.subheadline)
-                                            .foregroundColor(.gray)
+                                        HStack {
+                                            Text(row[2])
+                                            Spacer()
+                                                .padding()
+                                            Text(row[15])
+                                                .font(.subheadline)
+                                                .foregroundColor(.gray)
+                                        }
                                     }
                                 }
                             }
@@ -144,7 +146,6 @@ struct ReceiveListView: View {
             .task {
                 await loadData()
             }
-            .hideKeyboardOnTap()
         }
         .navigationTitle("参加バンドリスト")
         .toolbar {

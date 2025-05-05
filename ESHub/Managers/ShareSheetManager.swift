@@ -1,5 +1,5 @@
 //
-//  ShareSheetComponent.swift
+//  ShareSheetManager.swift
 //  ESHub
 //
 //  Created by 泉七海 on 2025/05/03.

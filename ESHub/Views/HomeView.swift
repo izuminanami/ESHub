@@ -26,10 +26,15 @@ struct HomeView: View {
                     .edgesIgnoringSafeArea(.all)
                 
                 VStack(spacing: 30) {
-                    Image("Logo")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 200)
+                    Button {
+                        requestReview()
+                    } label: {
+                        Image("Logo")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 200)
+                    }
+                    
                     HStack {
                         Spacer()
                         
@@ -40,12 +45,11 @@ struct HomeView: View {
                         } label: {
                             HStack {
                                 Text("How to use")
-                                    .foregroundColor(Color("emphasisColor"))
                                 
                                 Image(systemName: "questionmark.circle")
-                                    .foregroundColor(Color("emphasisColor"))
                                     .font(.system(size: 30))
                             }
+                            .foregroundColor(Color("emphasisColor"))
                         }
                     }
                     .padding(.horizontal, 50)

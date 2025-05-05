@@ -19,9 +19,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 struct HomeView: View {
     @State private var showInfo = false
     var body: some View {
-        GeometryReader { geometry in
-            let infoWidth = geometry.size.width / 1.25
-            let infoHeight = geometry.size.height / 1.75
             NavigationStack {
                 ZStack {
                     Color("backgroundColor")
@@ -104,7 +101,7 @@ struct HomeView: View {
                             Spacer()
                         }
                         .padding()
-                        .frame(width: infoWidth, height: infoHeight)
+                        .frame(width: 300, height: 500)
                         .background(Color("popupColor"))
                         .cornerRadius(20)
                         .shadow(radius: 5)
@@ -117,8 +114,6 @@ struct HomeView: View {
                 }
             }
             .navigationBarBackButtonHidden()
-            .frame(width: geometry.size.width, height: geometry.size.height)
-        }
     }
 }
 

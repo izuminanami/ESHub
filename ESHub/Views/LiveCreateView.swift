@@ -19,7 +19,8 @@ struct LiveCreateView: View {
     @State private var alertMessage = ""
     @State private var isButtonEnabled = true // 提出ボタン連打対策
     private let url = "https://script.google.com/macros/s/AKfycbya3qm5dfs4yGttbQvCZFYjS-wxZ13bYwj8tsSF4QTis1vve7j2zgAv2NSszQ9G93vMPQ/exec"
-    
+    private let spacerHeight: CGFloat = 50
+
     var body: some View {
         NavigationStack {
             ZStack {
@@ -27,31 +28,29 @@ struct LiveCreateView: View {
                     .edgesIgnoringSafeArea(.all)
                 VStack {
                     Spacer()
-                        .frame(height: 20)
+                        .frame(height: spacerHeight)
                     
-                    Text("ライブ名")
-                        .font(.title2)
-                    TextField("ex) 2025/5/1_ES大学軽音部_新歓ライブ", text: $liveName)
-                        .textFieldStyle(.roundedBorder)
-                        .padding()
+                    UnderlineTextFieldStyleComponent(title: "ライブ名", placeholder: "ex) 2025/5/1_ES大学軽音部_新歓ライブ", inputText: $liveName)
                     
                     Text("日付、団体名、ライブタイトルなどを含めて被らないものにしてください")
                         .font(.subheadline)
                         .foregroundColor(.gray)
-                        .padding()
+                        .padding(.horizontal)
                     
-                    Text("合言葉")
-                        .font(.title2)
-                    TextField("合言葉を設定してください", text: $watchWord)
-                        .textFieldStyle(.roundedBorder)
-                        .padding()
+                    Spacer()
+                        .frame(height: spacerHeight)
+                    
+                    UnderlineTextFieldStyleComponent(title: "合言葉", placeholder: "合言葉を設定してください", inputText: $watchWord)
                     
                     Text("合言葉は集まったESを確認するのに使用します")
                         .font(.subheadline)
                         .foregroundColor(.gray)
-                        .padding()
+                        .padding(.horizontal)
                     
-                    Button{
+                    Spacer()
+                        .frame(height: spacerHeight)
+                    
+                    Button {
                         sendData()
                     } label: {
                         SmallButtonLabelComponent(text: "作成")
@@ -65,6 +64,8 @@ struct LiveCreateView: View {
                     .onAppear() {
                         interstitial.loadInterstitial()
                     }.disabled(!isButtonEnabled)
+                    
+                    Spacer()
                 }
                 
                 if isButtonEnabled == false {

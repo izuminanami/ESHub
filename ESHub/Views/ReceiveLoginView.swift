@@ -14,33 +14,35 @@ struct ReceiveLoginView: View {
     @State var liveName = ""
     @State var watchWord = ""
     @State var alertMessage = ""
+    private let spacerHeight: CGFloat = 50
     var body: some View {
         NavigationStack {
             ZStack {
                 Color("backgroundColor")
                     .edgesIgnoringSafeArea(.all)
-                VStack(spacing: 10) {
-                    Text("ライブ名")
-                        .font(.title2)
-                    TextField("ライブ名を入力してください", text: $liveName)
-                        .textFieldStyle(.roundedBorder)
-                        .padding()
+                VStack {
+                    Spacer()
+                        .frame(height: spacerHeight)
+                    
+                    UnderlineTextFieldStyleComponent(title: "ライブ名", placeholder: "ライブ名を入力してください", inputText: $liveName)
                     
                     Text("作成したライブ名を入力してください")
                         .font(.subheadline)
                         .foregroundColor(.gray)
-                        .padding()
+                        .padding(.horizontal)
                     
-                    Text("合言葉")
-                        .font(.title2)
-                    TextField("合言葉を入力してください", text: $watchWord)
-                        .textFieldStyle(.roundedBorder)
-                        .padding()
+                    Spacer()
+                        .frame(height: spacerHeight)
+                    
+                    UnderlineTextFieldStyleComponent(title: "合言葉", placeholder: "合言葉を入力してください", inputText: $watchWord)
                     
                     Text("設定した合言葉を入力してください")
                         .font(.subheadline)
                         .foregroundColor(.gray)
-                        .padding()
+                        .padding(.horizontal)
+                    
+                    Spacer()
+                        .frame(height: spacerHeight)
                     
                     Button {
                         displayData()
@@ -52,6 +54,8 @@ struct ReceiveLoginView: View {
                     }
                     .navigationDestination(isPresented: $isAuthorized) {
                         ReceiveListView(liveName: liveName)}
+                    
+                    Spacer()
                 }
                 VStack {
                     Spacer()

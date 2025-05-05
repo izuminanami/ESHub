@@ -41,6 +41,7 @@ struct SubmitFormView: View {
             let formWidth = geometry.size.width / 1.5
             let titleFormWidth = geometry.size.width / 5
             let requestFormWidth = geometry.size.width / 4
+            let otherRequestFormWidth = geometry.size.width / 1.25
             NavigationStack {
                 ZStack {
                     Color("backgroundColor")
@@ -51,8 +52,7 @@ struct SubmitFormView: View {
                         
                         HStack {
                             Text("ライブ名：")
-                            TextField("伝えられたライブ名を入力してください", text: $liveName)
-                                .textFieldStyle(.roundedBorder)
+                            UnderlineTextFieldStyleComponent(title: nil, placeholder: "伝えられたライブ名を入力してください", inputText: $liveName)
                                 .frame(width: formWidth)
                         }
                         .padding(.horizontal)
@@ -62,8 +62,7 @@ struct SubmitFormView: View {
                         
                         HStack {
                             Text("バンド名：")
-                            TextField("バンド名を入力してください", text: $bandName)
-                                .textFieldStyle(.roundedBorder)
+                            UnderlineTextFieldStyleComponent(title: nil, placeholder: "バンド名を入力してください", inputText: $bandName)
                                 .frame(width: formWidth)
                         }
                         .padding(.horizontal)
@@ -84,8 +83,7 @@ struct SubmitFormView: View {
                         
                         ForEach($songs) { $song in
                             HStack {
-                                TextField("曲名", text: $song.title)
-                                    .textFieldStyle(.roundedBorder)
+                                UnderlineTextFieldStyleComponent(title: nil, placeholder: "曲名", inputText: $song.title)
                                     .frame(width: titleFormWidth)
                                 Button("\(song.minute)分\(song.second)秒") {
                                     selectedSong = song.id
@@ -95,11 +93,9 @@ struct SubmitFormView: View {
                                 }
                                 .foregroundColor(Color("primaryButtonColor"))
                                 .frame(width: 80)
-                                TextField("音響要望", text: $song.sound)
-                                    .textFieldStyle(.roundedBorder)
+                                UnderlineTextFieldStyleComponent(title: nil, placeholder: "音響要望", inputText: $song.sound)
                                     .frame(width: requestFormWidth)
-                                TextField("照明要望", text: $song.lighting)
-                                    .textFieldStyle(.roundedBorder)
+                                UnderlineTextFieldStyleComponent(title: nil, placeholder: "照明要望", inputText: $song.lighting)
                                     .frame(width: requestFormWidth)
                             }
                             .padding(.horizontal)
@@ -118,8 +114,7 @@ struct SubmitFormView: View {
                                 Text(member.role)
                                     .frame(width: 50, alignment: .leading)
                                 Text(":")
-                                TextField("いない場合は空欄", text: $member.name)
-                                    .textFieldStyle(.roundedBorder)
+                                UnderlineTextFieldStyleComponent(title: nil, placeholder: "いない場合は空欄", inputText: $member.name)
                                     .frame(width: formWidth)
                             }
                             .padding(.horizontal)
@@ -141,9 +136,8 @@ struct SubmitFormView: View {
                             .frame(height: 20)
                         
                         Text("その他")
-                        TextField("その他要望があれば入力してください", text: $otherRequest)
-                            .textFieldStyle(.roundedBorder)
-                            .frame(width: formWidth)
+                        UnderlineTextFieldStyleComponent(title: nil, placeholder: "その他要望があれば入力してください", inputText: $otherRequest)
+                            .frame(width: otherRequestFormWidth)
                         
                         Spacer()
                             .frame(height: 20)

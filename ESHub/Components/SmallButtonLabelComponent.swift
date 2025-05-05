@@ -15,11 +15,11 @@ public struct SmallButtonLabelComponent: View {
     }
     
     public var body: some View {
-        RoundedRectangle(cornerRadius: 20)
+        RoundedRectangle(cornerRadius: 90)
             .fill(Color("primaryButtonColor"))
             .frame(width: UIScreen.main.bounds.size.width / 4, height: UIScreen.main.bounds.size.height / 17)
             .shadow(radius: 5)
-            .overlay(Text(text).font((text.count < 3) ? .title: .title3))
+            .overlay(Text(text).font(.title2))
             .foregroundColor(.white)
     }
 }

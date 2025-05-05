@@ -15,7 +15,7 @@ public struct MiddleButtonLabelComponent: View {
     }
     
     public var body: some View {
-        RoundedRectangle(cornerRadius: 20)
+        RoundedRectangle(cornerRadius: 90)
             .fill(Color("primaryButtonColor"))
             .frame(width: UIScreen.main.bounds.size.width / 2.6, height: UIScreen.main.bounds.size.height / 10)
             .shadow(radius: 5)

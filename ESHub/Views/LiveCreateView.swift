@@ -64,10 +64,7 @@ struct LiveCreateView: View {
                     }
                     .onAppear() {
                         interstitial.loadInterstitial()
-                    }.disabled(!interstitial.interstitialLoaded)
-                    
-                    Spacer()
-                        .frame(height: 70)
+                    }.disabled(!isButtonEnabled)
                 }
                 
                 if isButtonEnabled == false {
@@ -92,27 +89,38 @@ struct LiveCreateView: View {
                 }
             }
         }
-        .navigationTitle("ライブ作成")
+        .navigationTitle("ライブを開催する")
     }
     
     func sendData() {
         if isButtonEnabled {
-            self.isButtonEnabled = false // 提出ボタン無効に。
-            
+            isButtonEnabled = false // 提出ボタン無効に。
+            guard NetworkManager.shared.isConnected else {
+                alertMessage = "ネットワークに接続されていません"
+                showAlert = true
+                isButtonEnabled = true // 提出ボタン使用可能に。
+                return
+            }
+            guard !(liveName.isEmpty && watchWord.isEmpty) else {
+                alertMessage = "ライブ名と合言葉を入力してください"
+                showAlert = true
+                isButtonEnabled = true // 提出ボタン使用可能に。
+                return
+            }
             guard !liveName.isEmpty else {
                 alertMessage = "ライブ名を入力してください"
                 showAlert = true
                 isButtonEnabled = true // 提出ボタン使用可能に。
                 return
             }
-            guard !watchWord.isEmpty else {
-                alertMessage = "合言葉を入力してください"
+            guard !spreadSheetManager.spreadSheetResponse.values.contains(where: { $0[0] == liveName }) else {
+                alertMessage = "入力されたライブ名は既に存在しています"
                 showAlert = true
                 isButtonEnabled = true // 提出ボタン使用可能に。
                 return
             }
-            if spreadSheetManager.spreadSheetResponse.values.contains(where: { $0[0] == liveName }) {
-                alertMessage = "入力されたライブ名は既に存在しています"
+            guard !watchWord.isEmpty else {
+                alertMessage = "合言葉を入力してください"
                 showAlert = true
                 isButtonEnabled = true // 提出ボタン使用可能に。
                 return

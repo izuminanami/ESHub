@@ -161,7 +161,7 @@ struct SubmitFormView: View {
                         }
                         .onAppear() {
                             interstitial.loadInterstitial()
-                        }.disabled(!interstitial.interstitialLoaded)
+                        }.disabled(!isButtonEnabled)
                         
                         Spacer()
                             .frame(height: 70)
@@ -229,7 +229,7 @@ struct SubmitFormView: View {
                     }
                 }
             }
-            .navigationTitle("ESフォーム(横画面推奨)")
+            .navigationTitle("ESを提出する(横画面推奨)")
             .frame(width: geometry.size.width, height: geometry.size.height)
         }
     }
@@ -238,6 +238,12 @@ struct SubmitFormView: View {
         if isButtonEnabled {
             self.isButtonEnabled = false // 提出ボタン無効に。
             
+            guard NetworkManager.shared.isConnected else {
+                alertMessage = "ネットワークに接続されていません"
+                showAlert = true
+                isButtonEnabled = true // 提出ボタン使用可能に。
+                return
+            }
             guard !liveName.isEmpty else {
                 alertMessage = "ライブ名を入力してください"
                 showAlert = true
@@ -256,7 +262,7 @@ struct SubmitFormView: View {
                 isButtonEnabled = true // 提出ボタン使用可能に。
                 return
             }
-            if !spreadSheetManager.spreadSheetResponse.values.contains(where: { $0[0] == liveName }) {
+            guard spreadSheetManager.spreadSheetResponse.values.contains(where: { $0[0] == liveName }) else {
                 alertMessage = "入力されたライブ名は存在しません"
                 showAlert = true
                 isButtonEnabled = true // 提出ボタン使用可能に。

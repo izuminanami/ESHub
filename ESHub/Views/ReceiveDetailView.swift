@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ReceiveDetailView: View {
+    @StateObject private var store = Store()
     let row: [String]
     var body: some View {
         GeometryReader { geometry in
@@ -219,10 +220,8 @@ struct ReceiveDetailView: View {
                     Spacer()
                         .frame(height: 70)
                 }
-                VStack {
-                    Spacer()
-                    AdMobBannerView()
-                        .frame(width: 320, height: 50)
+                if !store.isPurchased {
+                    AdBannerContainerView()
                 }
             }
             .navigationTitle("バンド詳細(横画面推奨)")

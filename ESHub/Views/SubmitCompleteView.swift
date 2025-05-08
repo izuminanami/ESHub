@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct SubmitCompleteView: View {
+    @StateObject private var store = Store()
     var body: some View {
         NavigationStack {
             ZStack {
@@ -24,10 +25,8 @@ struct SubmitCompleteView: View {
                             .foregroundColor(Color("primaryButtonColor"))
                     }
                 }
-                VStack {
-                    Spacer()
-                    AdMobBannerView()
-                        .frame(width: 320, height: 50)
+                if !store.isPurchased {
+                    AdBannerContainerView()
                 }
             }
         }

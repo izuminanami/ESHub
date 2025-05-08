@@ -18,7 +18,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
 
 struct HomeView: View {
+    @StateObject private var store = Store()
     @State private var showInfo = false
+    @State private var showAds = false
     var body: some View {
         NavigationStack {
             ZStack {
@@ -36,6 +38,16 @@ struct HomeView: View {
                     }
                     
                     HStack {
+                        if !store.isPurchased {
+                            Button {
+                                withAnimation {
+                                    showAds = true
+                                }
+                            } label: {
+                                AdRemoveIcon()
+                            }
+                        }
+                        
                         Spacer()
                         
                         Button {
@@ -44,14 +56,12 @@ struct HomeView: View {
                             }
                         } label: {
                             HStack {
-                                Text("How to use")
-                                
                                 Image(systemName: "questionmark.circle")
                                     .font(.system(size: 30))
                             }
-                            .foregroundColor(Color("emphasisColor"))
                         }
                     }
+                    .foregroundColor(Color("emphasisColor"))
                     .padding(.horizontal, 50)
                     
                     NavigationLink{
@@ -83,12 +93,65 @@ struct HomeView: View {
                 if showInfo {
                     InfoComponent(action: {showInfo = false})
                 }
-                VStack {
-                    Spacer()
-                    AdMobBannerView()
-                        .frame(width: 320, height: 50)
+                
+                if showAds {
+                    ZStack {
+                        Color.black.opacity(0.3)
+                            .edgesIgnoringSafeArea(.all)
+                            .onTapGesture {
+                                showAds = false
+                            }
+                        VStack(spacing: 30) {
+                            HStack {
+                                Spacer()
+                                Button {
+                                    withAnimation { // ToDo機能してない
+                                        showAds = false
+                                    }
+                                } label: {
+                                    Image(systemName: "xmark.circle.fill")
+                                        .foregroundColor(Color("primaryButtonColor"))
+                                        .font(.system(size: 30))
+                                }
+                            }
+                            VStack(spacing: 30) {
+                                if let product = store.removeAdsProduct {
+                                    Text("【ESHub Premium】")
+                                        .font(.title)
+                                    
+                                    Text ("「プレミアム機能：広告の削除」\n一度の購入で、永続的に広告を非表示にできます")
+                                    
+                                    Text("¥320")
+                                        .font(.headline)
+                                    
+                                    Button {
+                                        Task {
+                                            await store.purchase(product: product)
+                                        }
+                                    } label: {
+                                        SmallButtonLabelComponent(text: "購入")
+                                    }
+                                } else {
+                                    ProgressView("loading...")
+                                }
+                            }
+                            
+                            Spacer()
+                        }
+                        .padding()
+                        .frame(width: 300, height: 500)
+                        .background(Color("popupColor"))
+                        .cornerRadius(20)
+                        .shadow(radius: 5)
+                    }
+                }
+                if !store.isPurchased {
+                    AdBannerContainerView()
                 }
             }
+        }
+        .task {
+            await store.loadProducts()
         }
         .navigationBarBackButtonHidden()
     }

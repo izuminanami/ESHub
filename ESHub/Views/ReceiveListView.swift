@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ReceiveListView: View {
     @StateObject private var spreadSheetManager = ESSheetManager()
+    @StateObject private var store = Store()
     @Environment(\.editMode) private var editMode
     @State private var isShareSheetPresentedForPerformers = false
     @State private var isLoading = true
@@ -137,10 +138,8 @@ struct ReceiveListView: View {
                             .frame(height: 70)
                     }
                 }
-                VStack {
-                    Spacer()
-                    AdMobBannerView()
-                        .frame(width: 320, height: 50)
+                if !store.isPurchased {
+                    AdBannerContainerView()
                 }
             }
             .task {

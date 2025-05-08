@@ -9,6 +9,7 @@ import SwiftUI
 
 @main
 struct ESHubApp: App {
+    @StateObject private var store = Store()
     
     init() {
         _ = NetworkManager.shared // 起動時にネットワーク状態の初期確認を促す(初回guard回避のため)
@@ -17,6 +18,7 @@ struct ESHubApp: App {
     var body: some Scene {
         WindowGroup {
             HomeView()
+                .environmentObject(store)
         }
     }
 }

@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct LiveCreateCompleteView: View {
+    @StateObject private var store = Store()
     @State private var isShareSheetPresentedForPerformers = false
     @State private var isShareSheetPresentedForCoOrganizers = false
     let liveName: String
@@ -57,10 +58,8 @@ struct LiveCreateCompleteView: View {
                             .foregroundColor(Color("primaryButtonColor"))
                     }
                 }
-                VStack {
-                    Spacer()
-                    AdMobBannerView()
-                        .frame(width: 320, height: 50)
+                if !store.isPurchased {
+                    AdBannerContainerView()
                 }
             }
         }

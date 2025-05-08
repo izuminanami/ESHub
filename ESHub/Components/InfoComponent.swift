@@ -34,7 +34,12 @@ public struct InfoComponent: View {
                             .font(.system(size: 30))
                     }
                 }
+                
+                Text("【使い方】")
+                    .font(.title)
+                
                 VStack(alignment: .leading, spacing: 10) {
+                    
                     Text("【ライブ主催者の方へ】")
                         .font(.headline)
                     
@@ -45,9 +50,6 @@ public struct InfoComponent: View {
                     
                     Text("「ESを提出する」から主催者に伝えられたライブ名を入力し、必要な情報を記入してESを提出してください。")
                 }
-                .font(.body)
-                .multilineTextAlignment(.leading)
-                
                 
                 Spacer()
             }

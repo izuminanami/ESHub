@@ -12,6 +12,7 @@ import SwiftyJSON
 struct LiveCreateView: View {
     @ObservedObject  var interstitial = AdMobInterstitialView()
     @StateObject private var spreadSheetManager = LiveSheetManager()
+    @StateObject private var store = Store()
     @State private var isCreated = false
     @State private var liveName: String = ""
     @State private var watchWord: String = ""
@@ -73,11 +74,8 @@ struct LiveCreateView: View {
                         .edgesIgnoringSafeArea(.all)
                     ProgressView("Please wait...")
                 }
-                
-                VStack {
-                    Spacer()
-                    AdMobBannerView()
-                        .frame(width: 320, height: 50)
+                if !store.isPurchased {
+                    AdBannerContainerView()
                 }
             }
             .hideKeyboardOnTap()
@@ -141,7 +139,9 @@ struct LiveCreateView: View {
                 case .success(let str):
                     print("成功: \(str)")
                     
-                    interstitial.presentInterstitial() // インタースティシャル広告表示
+                    if !store.isPurchased {
+                        interstitial.presentInterstitial() // インタースティシャル広告表示
+                    }
                     isCreated = true // LiveCreateCompleteViewへ遷移
                     
                 case .failure(let error):

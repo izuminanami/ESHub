@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ReceiveLoginView: View {
     @StateObject private var spreadSheetManager = LiveSheetManager()
+    @StateObject private var store = Store()
     @State private var isAuthorized = false
     @State private var showAlert = false
     @State var liveName = ""
@@ -57,10 +58,8 @@ struct ReceiveLoginView: View {
                     
                     Spacer()
                 }
-                VStack {
-                    Spacer()
-                    AdMobBannerView()
-                        .frame(width: 320, height: 50)
+                if !store.isPurchased {
+                    AdBannerContainerView()
                 }
             }
             .hideKeyboardOnTap()

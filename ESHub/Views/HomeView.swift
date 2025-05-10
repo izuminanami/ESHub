@@ -131,6 +131,15 @@ struct HomeView: View {
                                     } label: {
                                         SmallButtonLabelComponent(text: "購入")
                                     }
+                                    
+                                    Button {
+                                        Task {
+                                            await store.restorePurchase()
+                                        }
+                                    } label: {
+                                        Text("購入を復元")
+                                            .foregroundColor(Color("primaryButtonColor"))
+                                    }
                                 } else {
                                     ProgressView("loading...")
                                 }

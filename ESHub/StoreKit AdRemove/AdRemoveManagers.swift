@@ -87,4 +87,14 @@ class Store: ObservableObject {
         }
         return false
     }
+    
+    func restorePurchase() async {
+        do {
+            try await AppStore.sync()
+            await checkPurchaseStatus()
+            print("復元処理完了")
+        } catch {
+            print("復元エラー: \(error)")
+        }
+    }
 }

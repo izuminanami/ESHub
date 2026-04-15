@@ -14,8 +14,8 @@ struct SpreadSheetResponse: Codable {
 }
 
 class ESSheetManager: ObservableObject {
-    private let apiKey = "AIzaSyDRwAUZYsTHqbqtGs3d521raNWCojMPwYs"
-    private let spreadsheetId = "1tG1QgEc_RM98SjRMYmduNsdOkcQ2HNHGMRKoFKApFvg"
+    private let apiKey = ""
+    private let spreadsheetId = ""
     private let sheetName = "ESSheet"
     private let cellRange = "A2:P30000"
     @Published private(set) var spreadSheetResponse = SpreadSheetResponse(range: "", majorDimension: "", values: [[""]])
@@ -35,8 +35,8 @@ class ESSheetManager: ObservableObject {
 }
 
 class LiveSheetManager: ObservableObject {
-    private let apiKey = "AIzaSyBtZtPcZ0s3QUT1gQCjpihU-vWo5z0BK4s"
-    private let spreadsheetId = "1lyTjgLcxPdWI_kAnEkQtwfD2JTuw6jm102uQvjr6XzA"
+    private let apiKey = ""
+    private let spreadsheetId = ""
     private let sheetName = "LiveList"
     private let cellRange = "A2:B10000"
     @Published private(set) var spreadSheetResponse = SpreadSheetResponse(range: "", majorDimension: "", values: [[""]])

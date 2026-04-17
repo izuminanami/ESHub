@@ -8,8 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		B145D2E42DC3155700D30B7C /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = B145D2E32DC3155700D30B7C /* GoogleMobileAds */; };
+		B16BE8732F92AC1800799A69 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B16BE86F2F92AC1800799A69 /* GoogleService-Info.plist */; };
 		B190F0D82DBA8E8D00CB301E /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = B190F0D72DBA8E8D00CB301E /* Alamofire */; };
 		B1CFC3832DBA895300EBB688 /* SwiftyJSON in Frameworks */ = {isa = PBXBuildFile; productRef = B1CFC3822DBA895300EBB688 /* SwiftyJSON */; };
+		B1DFDFCF2F925432009C65B8 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = B1DFDFCE2F925432009C65B8 /* FirebaseFirestore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -27,6 +29,11 @@
 
 /* Begin PBXFileReference section */
 		B151036B2DB747840003367B /* ESHub.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ESHub.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B16BE86E2F92AC1800799A69 /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
+		B16BE86F2F92AC1800799A69 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		B16BE8702F92AC1800799A69 /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
+		B1A0C0F32F0000030003367B /* Template.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Template.xcconfig; sourceTree = "<group>"; };
+		B1A0C0F52F0000050003367B /* GoogleService-Info.template.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.template.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -56,6 +63,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B145D2E42DC3155700D30B7C /* GoogleMobileAds in Frameworks */,
+				B1DFDFCF2F925432009C65B8 /* FirebaseFirestore in Frameworks */,
 				B1CFC3832DBA895300EBB688 /* SwiftyJSON in Frameworks */,
 				B190F0D82DBA8E8D00CB301E /* Alamofire in Frameworks */,
 			);
@@ -67,6 +75,7 @@
 		B15103622DB747840003367B = {
 			isa = PBXGroup;
 			children = (
+				B1A0C0F42F0000040003367B /* Config */,
 				B151036D2DB747840003367B /* ESHub */,
 				B151036C2DB747840003367B /* Products */,
 			);
@@ -79,6 +88,34 @@
 			);
 			name = Products;
 			sourceTree = "<group>";
+		};
+		B16BE8712F92AC1800799A69 /* Local */ = {
+			isa = PBXGroup;
+			children = (
+				B16BE86E2F92AC1800799A69 /* Debug.xcconfig */,
+				B16BE86F2F92AC1800799A69 /* GoogleService-Info.plist */,
+				B16BE8702F92AC1800799A69 /* Release.xcconfig */,
+			);
+			path = Local;
+			sourceTree = "<group>";
+		};
+		B1A0C0F62F0000060003367B /* Template */ = {
+			isa = PBXGroup;
+			children = (
+				B1A0C0F32F0000030003367B /* Template.xcconfig */,
+				B1A0C0F52F0000050003367B /* GoogleService-Info.template.plist */,
+			);
+			path = Template;
+			sourceTree = "<group>";
+		};
+		B1A0C0F42F0000040003367B /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				B16BE8712F92AC1800799A69 /* Local */,
+				B1A0C0F62F0000060003367B /* Template */,
+			);
+			path = Config;
+			sourceTree = SOURCE_ROOT;
 		};
 /* End PBXGroup section */
 
@@ -104,6 +141,7 @@
 				B1CFC3822DBA895300EBB688 /* SwiftyJSON */,
 				B190F0D72DBA8E8D00CB301E /* Alamofire */,
 				B145D2E32DC3155700D30B7C /* GoogleMobileAds */,
+				B1DFDFCE2F925432009C65B8 /* FirebaseFirestore */,
 			);
 			productName = ESHub;
 			productReference = B151036B2DB747840003367B /* ESHub.app */;
@@ -138,6 +176,7 @@
 				B1CFC3812DBA895300EBB688 /* XCRemoteSwiftPackageReference "SwiftyJSON" */,
 				B190F0D62DBA8E8D00CB301E /* XCRemoteSwiftPackageReference "Alamofire" */,
 				B145D2E22DC3155700D30B7C /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
+				B1DFDFCD2F925432009C65B8 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B151036C2DB747840003367B /* Products */;
@@ -154,6 +193,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B16BE8732F92AC1800799A69 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -293,6 +333,7 @@
 		};
 		B15103772DB747850003367B /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B16BE86E2F92AC1800799A69 /* Debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -325,6 +366,7 @@
 		};
 		B15103782DB747850003367B /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B16BE8702F92AC1800799A69 /* Release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -403,6 +445,14 @@
 				minimumVersion = 5.0.2;
 			};
 		};
+		B1DFDFCD2F925432009C65B8 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.12.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -420,6 +470,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B1CFC3812DBA895300EBB688 /* XCRemoteSwiftPackageReference "SwiftyJSON" */;
 			productName = SwiftyJSON;
+		};
+		B1DFDFCE2F925432009C65B8 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B1DFDFCD2F925432009C65B8 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

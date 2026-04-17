@@ -1,0 +1,12 @@
+# Firebase
+Config/Local/GoogleService-Info.plist
+
+# Local build configuration
+Config/Local/Debug.xcconfig
+Config/Local/Release.xcconfig
+
+# Xcode user data
+*.xcuserstate
+*.xcbkptlist
+**/xcuserdata/
+DerivedData/

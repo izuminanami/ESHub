@@ -6,12 +6,9 @@
 //
 
 import SwiftUI
-import Alamofire
-import SwiftyJSON
 
 struct SubmitFormView: View {
     @ObservedObject  var interstitial = AdMobInterstitialView()
-    @StateObject private var spreadSheetManager = LiveSheetManager()
     @StateObject private var store = Store()
     @State private var showPicker = false
     @State private var isSubmitted = false
@@ -34,8 +31,6 @@ struct SubmitFormView: View {
     @State private var showAlert = false
     @State private var alertMessage = ""
     @State private var isButtonEnabled = true // 提出ボタン連打対策
-    
-    private let url = "https://script.google.com/macros/s/AKfycbzR2gu1kHuewcT2t-QDAX_t0VGMysK8q1twXlRE-3hKcCmTb4BxPvdQSPPyzKDZ1bDI7A/exec"
     
     var body: some View {
         GeometryReader { geometry in
@@ -212,14 +207,6 @@ struct SubmitFormView: View {
                     }
                 }
                 .hideKeyboardOnTap()
-                .task {
-                    do {
-                        try await spreadSheetManager.fetchGoogleSheetData()
-                        print("success")
-                    } catch {
-                        print("error: \(error)")
-                    }
-                }
             }
             .navigationTitle("ESを提出する(横画面推奨)")
             .frame(width: geometry.size.width, height: geometry.size.height)
@@ -227,94 +214,74 @@ struct SubmitFormView: View {
     }
     
     func sendData() {
-        if isButtonEnabled {
-            self.isButtonEnabled = false // 提出ボタン無効に。
-            
-            guard NetworkManager.shared.isConnected else {
-                alertMessage = "ネットワークに接続されていません"
-                showAlert = true
-                isButtonEnabled = true // 提出ボタン使用可能に。
-                return
-            }
-            guard !liveName.isEmpty else {
-                alertMessage = "ライブ名を入力してください"
-                showAlert = true
-                isButtonEnabled = true // 提出ボタン使用可能に。
-                return
-            }
-            guard !bandName.isEmpty else {
-                alertMessage = "バンド名を入力してください"
-                showAlert = true
-                isButtonEnabled = true // 提出ボタン使用可能に。
-                return
-            }
-            guard songs.contains(where: { !$0.title.isEmpty }) else {
-                alertMessage = "少なくとも1曲は入力してください"
-                showAlert = true
-                isButtonEnabled = true // 提出ボタン使用可能に。
-                return
-            }
-            guard spreadSheetManager.spreadSheetResponse.values.contains(where: { $0[0] == liveName }) else {
-                alertMessage = "入力されたライブ名は存在しません"
-                showAlert = true
-                isButtonEnabled = true // 提出ボタン使用可能に。
-                return
-            }
-            
-            let formatter = DateFormatter()
-            formatter.dateFormat = "yyyy/MM/dd HH:mm"
-            formatter.timeZone = TimeZone(identifier: "Asia/Tokyo")
-            let dateString = formatter.string(from: Date())
-            
-            let totalSeconds = songs.reduce(0) { $0 + ($1.minute * 60 + $1.second) }
-            let hours = totalSeconds / 3600
-            let minutes = (totalSeconds % 3600) / 60
-            let seconds = totalSeconds % 60
-            let alltime = String(format: "%d:%02d:%02d", hours, minutes, seconds)
-            
-            let es: [String: Any] = [
-                "date": dateString,
-                "liveName": liveName,
-                "bandName": bandName,
-                "vo": members.count > 0 ? members[0].name : "",
-                "gt1": members.count > 1 ? members[1].name : "",
-                "gt2": members.count > 2 ? members[2].name : "",
-                "ba": members.count > 3 ? members[3].name : "",
-                "dr": members.count > 4 ? members[4].name : "",
-                "key": members.count > 5 ? members[5].name : "",
-                "se": se,
-                "otherRequest": otherRequest,
-                "title": songs.map {"\($0.title)"}.joined(separator: ", "),
-                "time": songs.map { String(format: "%d:%02d", $0.minute, $0.second) }.joined(separator: ", "),
-                "sound": songs.map {"\($0.sound)"}.joined(separator: ", "),
-                "lighting": songs.map {"\($0.lighting)"}.joined(separator: ", "),
-                "allTime": alltime
-            ]
-            
-            let entrySheets = [es]
-            
-            AF.request(url,
-                       method: .post,
-                       parameters: ["entrySheets": entrySheets],
-                       encoding: JSONEncoding.default
-            ).responseString { response in
-                switch response.result {
-                case .success(let str):
-                    print("成功: \(str)")
-                    
+        guard isButtonEnabled else {
+            return
+        }
+        
+        isButtonEnabled = false
+        
+        let trimmedLiveName = liveName.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedBandName = bandName.trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        guard NetworkManager.shared.isConnected else {
+            alertMessage = "ネットワークに接続されていません"
+            showAlert = true
+            isButtonEnabled = true
+            return
+        }
+        guard !trimmedLiveName.isEmpty else {
+            alertMessage = "ライブ名を入力してください"
+            showAlert = true
+            isButtonEnabled = true
+            return
+        }
+        guard !trimmedBandName.isEmpty else {
+            alertMessage = "バンド名を入力してください"
+            showAlert = true
+            isButtonEnabled = true
+            return
+        }
+        guard songs.contains(where: \.hasTitle) else {
+            alertMessage = "少なくとも1曲は入力してください"
+            showAlert = true
+            isButtonEnabled = true
+            return
+        }
+        
+        let draft = LiveEntryDraft(
+            bandName: trimmedBandName,
+            members: members,
+            songs: songs,
+            seEnabled: se == "あり",
+            otherRequest: otherRequest
+        )
+        
+        Task {
+            do {
+                guard let live = try await FirestoreManager.shared.fetchLive(named: trimmedLiveName) else {
+                    await MainActor.run {
+                        alertMessage = "入力されたライブ名は存在しません"
+                        showAlert = true
+                        isButtonEnabled = true
+                    }
+                    return
+                }
+                
+                _ = try await FirestoreManager.shared.submitEntry(to: live, draft: draft)
+                
+                await MainActor.run {
                     if !store.isPurchased {
                         interstitial.presentInterstitial() // インタースティシャル広告表示
                     }
                     isSubmitted = true // SubmitCompleteViewへ遷移
-                    
-                case .failure(let error):
-                    print("エラー: \(error)")
-                    
+                    isButtonEnabled = true
+                }
+            } catch {
+                await MainActor.run {
                     alertMessage = "提出失敗：\(error.localizedDescription)"
                     showAlert = true
-                    
+                    isButtonEnabled = true // 提出ボタン使用可能に。
                 }
-                isButtonEnabled = true // 提出ボタン使用可能に。
             }
         }
     }

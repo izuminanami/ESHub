@@ -9,15 +9,11 @@ import SwiftUI
 
 struct ReceiveDetailView: View {
     @StateObject private var store = Store()
-    let row: [String]
+    let entry: LiveEntry
     var body: some View {
         GeometryReader { geometry in
             let titleWidth = geometry.size.width / 5
             let requestWidth = geometry.size.width / 3.5
-            let titles = row[11].components(separatedBy: ", ")
-            let times = row[12].components(separatedBy: ", ")
-            let sounds = row[13].components(separatedBy: ", ")
-            let lightings = row[14].components(separatedBy: ", ")
             
             ZStack {
                 Color("backgroundColor")
@@ -29,7 +25,7 @@ struct ReceiveDetailView: View {
                     Group {
                         Text("バンド名")
                             .padding(.vertical, 5)
-                        Text(row[2])
+                        Text(entry.bandName)
                             .font(.title3)
                             .foregroundColor(Color("primaryButtonColor"))
                             .lineLimit(1)
@@ -54,26 +50,26 @@ struct ReceiveDetailView: View {
                         }
                         .padding(.vertical, 5)
                         
-                        ForEach(titles.indices.filter { titles[$0] != "" }, id: \.self) { index in
+                        ForEach(entry.songs.filter(\.hasTitle)) { song in
                             HStack {
                                 Spacer()
                                     .frame(width: 20)
-                                Text(titles[index])
+                                Text(song.title)
                                     .frame(width: titleWidth, alignment: .leading)
                                     .lineLimit(1)
                                     .truncationMode(.tail)
                                 
-                                Text(times[index] != "0:00" ? times[index] : "")
+                                Text(song.formattedDuration != "0:00" ? song.formattedDuration : "")
                                     .frame(width: 50, alignment: .leading)
                                     .lineLimit(1)
                                     .truncationMode(.tail)
                                 
-                                Text(index < sounds.count ? sounds[index] : "")
+                                Text(song.sound)
                                     .frame(width: requestWidth, alignment: .leading)
                                     .lineLimit(1)
                                     .truncationMode(.tail)
                                 
-                                Text(index < lightings.count ? lightings[index] : "")
+                                Text(song.lighting)
                                     .frame(width: requestWidth, alignment: .leading)
                                     .lineLimit(1)
                                     .truncationMode(.tail)
@@ -82,12 +78,12 @@ struct ReceiveDetailView: View {
                         }
                     }
                     
-                    if !row[15].isEmpty {
+                    if entry.totalDurationSeconds > 0 {
                         HStack {
                             Spacer()
                                 .frame(width: geometry.size.width / 15)
                             
-                            Text("合計時間：" + row[15])
+                            Text("合計時間：" + entry.totalDurationText)
                             
                             Spacer()
                         }
@@ -102,85 +98,15 @@ struct ReceiveDetailView: View {
                             .padding(.vertical, 5)
                         
                         VStack(alignment: .leading) {
-                            if !row[3].isEmpty {
+                            ForEach(entry.members.filter(\.hasName)) { member in
                                 HStack {
                                     HStack {
-                                        Text("Vo.")
+                                        Text(member.role)
                                             .frame(width: 50)
                                         Text(":")
                                     }
-                                    Text(row[3])
-                                        .foregroundColor((row[3].first == "⭐︎" || row[3].first == "★") ? Color("primaryButtonColor") : .primary)
-                                        .lineLimit(1)
-                                        .truncationMode(.tail)
-                                }
-                                .padding(.horizontal)
-                            }
-                            if !row[4].isEmpty {
-                                HStack {
-                                    HStack {
-                                        Text("Gt1.")
-                                            .frame(width: 50)
-                                        Text(":")
-                                    }
-                                    Text(row[4])
-                                        .foregroundColor((row[4].first == "⭐︎" || row[4].first == "★") ? Color("primaryButtonColor") : .primary)
-                                        .lineLimit(1)
-                                        .truncationMode(.tail)
-                                }
-                                .padding(.horizontal)
-                            }
-                            if !row[5].isEmpty {
-                                HStack {
-                                    HStack {
-                                        Text("Gt2.")
-                                            .frame(width: 50)
-                                        Text(":")
-                                    }
-                                    Text(row[5])
-                                        .foregroundColor((row[5].first == "⭐︎" || row[5].first == "★") ? Color("primaryButtonColor") : .primary)
-                                        .lineLimit(1)
-                                        .truncationMode(.tail)
-                                }
-                                .padding(.horizontal)
-                            }
-                            if !row[6].isEmpty {
-                                HStack {
-                                    HStack {
-                                        Text("Ba.")
-                                            .frame(width: 50)
-                                        Text(":")
-                                    }
-                                    Text(row[6])
-                                        .foregroundColor((row[6].first == "⭐︎" || row[6].first == "★") ? Color("primaryButtonColor") : .primary)
-                                        .lineLimit(1)
-                                        .truncationMode(.tail)
-                                }
-                                .padding(.horizontal)
-                            }
-                            if !row[7].isEmpty {
-                                HStack {
-                                    HStack {
-                                        Text("Dr.")
-                                            .frame(width: 50)
-                                        Text(":")
-                                    }
-                                    Text(row[7])
-                                        .foregroundColor((row[7].first == "⭐︎" || row[7].first == "★") ? Color("primaryButtonColor") : .primary)
-                                        .lineLimit(1)
-                                        .truncationMode(.tail)
-                                }
-                                .padding(.horizontal)
-                            }
-                            if !row[8].isEmpty {
-                                HStack {
-                                    HStack {
-                                        Text("Key.")
-                                            .frame(width: 50)
-                                        Text(":")
-                                    }
-                                    Text(row[8])
-                                        .foregroundColor((row[8].first == "⭐︎" || row[8].first == "★") ? Color("primaryButtonColor") : .primary)
+                                    Text(member.name)
+                                        .foregroundColor((member.name.first == "⭐︎" || member.name.first == "★") ? Color("primaryButtonColor") : .primary)
                                         .lineLimit(1)
                                         .truncationMode(.tail)
                                 }
@@ -195,17 +121,17 @@ struct ReceiveDetailView: View {
                             .font(.title3)
                         Spacer()
                             .frame(height: 10)
-                        Text(row[9])
+                        Text(entry.seEnabled ? "あり" : "なし")
                         
                         Spacer()
                             .frame(height: 30)
                         
-                        if !row[10].isEmpty {
+                        if !entry.otherRequest.isEmpty {
                             Text("その他")
                                 .font(.title3)
                             Spacer()
                                 .frame(height: 10)
-                            Text(row[10])
+                            Text(entry.otherRequest)
                                 .padding(.horizontal)
                                 .lineLimit(5)
                                 .truncationMode(.tail)
@@ -214,7 +140,7 @@ struct ReceiveDetailView: View {
                         Spacer()
                             .frame(height: 30)
                         
-                        Text("提出日時：" + row[0])
+                        Text("提出日時：" + entry.createdAtText)
                             .padding(.vertical, 5)
                     }
                     Spacer()

@@ -8,14 +8,15 @@
 import SwiftUI
 
 struct ReceiveLoginView: View {
-    @StateObject private var spreadSheetManager = LiveSheetManager()
     @StateObject private var store = Store()
     @State private var isAuthorized = false
+    @State private var authorizedLive: LiveEvent?
     @State private var showAlert = false
     @State var liveName = ""
     @State var watchWord = ""
     @State var alertMessage = ""
     private let spacerHeight: CGFloat = 50
+    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -54,7 +55,10 @@ struct ReceiveLoginView: View {
                         Alert(title: Text("表示エラー"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
                     }
                     .navigationDestination(isPresented: $isAuthorized) {
-                        ReceiveListView(liveName: liveName)}
+                        if let authorizedLive {
+                            ReceiveListView(live: authorizedLive)
+                        }
+                    }
                     
                     Spacer()
                 }
@@ -63,49 +67,65 @@ struct ReceiveLoginView: View {
                 }
             }
             .hideKeyboardOnTap()
-            .task {
-                do {
-                    try await spreadSheetManager.fetchGoogleSheetData()
-                    print("success")
-                } catch {
-                    print("error: \(error)")
-                }
-            }
         }
         .navigationTitle("ESを確認する")
     }
     private func displayData() {
+        let trimmedLiveName = liveName.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedWatchWord = watchWord.trimmingCharacters(in: .whitespacesAndNewlines)
+        
         guard NetworkManager.shared.isConnected else {
             alertMessage = "ネットワークに接続されていません"
             showAlert = true
             return
         }
-        guard !(liveName.isEmpty && watchWord.isEmpty) else {
+        guard !(trimmedLiveName.isEmpty && trimmedWatchWord.isEmpty) else {
             alertMessage = "ライブ名と合言葉を入力してください"
             showAlert = true
             return
         }
-        guard !liveName.isEmpty else {
+        guard !trimmedLiveName.isEmpty else {
             alertMessage = "ライブ名を入力してください"
             showAlert = true
             return
         }
-        guard spreadSheetManager.spreadSheetResponse.values.contains(where: { $0[0] == liveName}) else {
-            alertMessage = "入力されたライブ名は存在しません"
-            showAlert = true
-            return
-        }
-        guard !watchWord.isEmpty else {
+        guard !trimmedWatchWord.isEmpty else {
             alertMessage = "合言葉を入力してください"
             showAlert = true
             return
         }
-        guard spreadSheetManager.spreadSheetResponse.values.contains(where: { $0[0] == liveName && $0[1] == watchWord }) else {
-            alertMessage = "合言葉が正しくありません"
-            showAlert = true
-            return
+        
+        Task {
+            do {
+                guard let live = try await FirestoreManager.shared.fetchLive(named: trimmedLiveName) else {
+                    await MainActor.run {
+                        alertMessage = "入力されたライブ名は存在しません"
+                        showAlert = true
+                    }
+                    return
+                }
+                
+                guard live.watchWord == trimmedWatchWord else {
+                    await MainActor.run {
+                        alertMessage = "合言葉が正しくありません"
+                        showAlert = true
+                    }
+                    return
+                }
+                
+                await MainActor.run {
+                    liveName = live.name
+                    watchWord = live.watchWord
+                    authorizedLive = live
+                    isAuthorized = true
+                }
+            } catch {
+                await MainActor.run {
+                    alertMessage = "表示失敗：\(error.localizedDescription)"
+                    showAlert = true
+                }
+            }
         }
-        isAuthorized = true
     }
 }
 

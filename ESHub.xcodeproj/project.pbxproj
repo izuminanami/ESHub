@@ -9,8 +9,6 @@
 /* Begin PBXBuildFile section */
 		B145D2E42DC3155700D30B7C /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = B145D2E32DC3155700D30B7C /* GoogleMobileAds */; };
 		B16BE8732F92AC1800799A69 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B16BE86F2F92AC1800799A69 /* GoogleService-Info.plist */; };
-		B190F0D82DBA8E8D00CB301E /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = B190F0D72DBA8E8D00CB301E /* Alamofire */; };
-		B1CFC3832DBA895300EBB688 /* SwiftyJSON in Frameworks */ = {isa = PBXBuildFile; productRef = B1CFC3822DBA895300EBB688 /* SwiftyJSON */; };
 		B1DFDFCF2F925432009C65B8 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = B1DFDFCE2F925432009C65B8 /* FirebaseFirestore */; };
 /* End PBXBuildFile section */
 
@@ -64,8 +62,6 @@
 			files = (
 				B145D2E42DC3155700D30B7C /* GoogleMobileAds in Frameworks */,
 				B1DFDFCF2F925432009C65B8 /* FirebaseFirestore in Frameworks */,
-				B1CFC3832DBA895300EBB688 /* SwiftyJSON in Frameworks */,
-				B190F0D82DBA8E8D00CB301E /* Alamofire in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -99,15 +95,6 @@
 			path = Local;
 			sourceTree = "<group>";
 		};
-		B1A0C0F62F0000060003367B /* Template */ = {
-			isa = PBXGroup;
-			children = (
-				B1A0C0F32F0000030003367B /* Template.xcconfig */,
-				B1A0C0F52F0000050003367B /* GoogleService-Info.template.plist */,
-			);
-			path = Template;
-			sourceTree = "<group>";
-		};
 		B1A0C0F42F0000040003367B /* Config */ = {
 			isa = PBXGroup;
 			children = (
@@ -116,6 +103,15 @@
 			);
 			path = Config;
 			sourceTree = SOURCE_ROOT;
+		};
+		B1A0C0F62F0000060003367B /* Template */ = {
+			isa = PBXGroup;
+			children = (
+				B1A0C0F32F0000030003367B /* Template.xcconfig */,
+				B1A0C0F52F0000050003367B /* GoogleService-Info.template.plist */,
+			);
+			path = Template;
+			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
@@ -138,8 +134,6 @@
 			);
 			name = ESHub;
 			packageProductDependencies = (
-				B1CFC3822DBA895300EBB688 /* SwiftyJSON */,
-				B190F0D72DBA8E8D00CB301E /* Alamofire */,
 				B145D2E32DC3155700D30B7C /* GoogleMobileAds */,
 				B1DFDFCE2F925432009C65B8 /* FirebaseFirestore */,
 			);
@@ -173,8 +167,6 @@
 			mainGroup = B15103622DB747840003367B;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				B1CFC3812DBA895300EBB688 /* XCRemoteSwiftPackageReference "SwiftyJSON" */,
-				B190F0D62DBA8E8D00CB301E /* XCRemoteSwiftPackageReference "Alamofire" */,
 				B145D2E22DC3155700D30B7C /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
 				B1DFDFCD2F925432009C65B8 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
@@ -429,22 +421,6 @@
 				minimumVersion = 12.3.0;
 			};
 		};
-		B190F0D62DBA8E8D00CB301E /* XCRemoteSwiftPackageReference "Alamofire" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Alamofire/Alamofire";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 5.10.2;
-			};
-		};
-		B1CFC3812DBA895300EBB688 /* XCRemoteSwiftPackageReference "SwiftyJSON" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/SwiftyJSON/SwiftyJSON";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 5.0.2;
-			};
-		};
 		B1DFDFCD2F925432009C65B8 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
@@ -460,16 +436,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B145D2E22DC3155700D30B7C /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */;
 			productName = GoogleMobileAds;
-		};
-		B190F0D72DBA8E8D00CB301E /* Alamofire */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = B190F0D62DBA8E8D00CB301E /* XCRemoteSwiftPackageReference "Alamofire" */;
-			productName = Alamofire;
-		};
-		B1CFC3822DBA895300EBB688 /* SwiftyJSON */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = B1CFC3812DBA895300EBB688 /* XCRemoteSwiftPackageReference "SwiftyJSON" */;
-			productName = SwiftyJSON;
 		};
 		B1DFDFCE2F925432009C65B8 /* FirebaseFirestore */ = {
 			isa = XCSwiftPackageProductDependency;

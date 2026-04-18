@@ -18,11 +18,7 @@ class AdMobInterstitialView: NSObject, ObservableObject, FullScreenContentDelega
     }
     
     func loadInterstitial() {
-        #if DEBUG
-        let interstitialUnitID = "ca-app-pub-3940256099942544/4411468910"
-        #else
-        let interstitialUnitID = "ca-app-pub-3453173920554262/5239304644"
-        #endif
+        let interstitialUnitID = AppConfiguration.interstitialAdUnitID
         
         InterstitialAd.load(with: interstitialUnitID, request: Request()) { (ad, error) in
             if let _ = error {

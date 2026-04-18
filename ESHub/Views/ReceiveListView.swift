@@ -8,22 +8,21 @@
 import SwiftUI
 
 struct ReceiveListView: View {
-    @StateObject private var spreadSheetManager = ESSheetManager()
     @StateObject private var store = Store()
     @Environment(\.editMode) private var editMode
     @State private var isShareSheetPresentedForPerformers = false
     @State private var isLoading = true
     @State private var isShowingActionSheet = false
-    @State private var filteredRows: [[String]] = []
+    @State private var filteredEntries: [LiveEntry] = []
     @State private var selectedTime = Date() // 選択された開始時間を保持
     @State private var selectedBreakTime: Int = 10
     
-    let liveName: String
+    let live: LiveEvent
     private let orderKey: String
     
-    init(liveName: String) {
-        self.liveName = liveName
-        self.orderKey = "sortedOrder_\(liveName)"
+    init(live: LiveEvent) {
+        self.live = live
+        self.orderKey = "sortedOrder_\(live.id)"
     }
     
     var body: some View {
@@ -34,7 +33,7 @@ struct ReceiveListView: View {
                 
                 if isLoading {
                     ProgressView("loading...")
-                } else if filteredRows.isEmpty {
+                } else if filteredEntries.isEmpty {
                     VStack(spacing: 30) {
                         Text("提出されたESはありません")
                         
@@ -44,7 +43,7 @@ struct ReceiveListView: View {
                             MiddleButtonLabelComponent(text: "告知をする")
                         }
                         .sheet(isPresented: $isShareSheetPresentedForPerformers) {
-                            ShareSheet(activityItems: ["「"+liveName+"」でES募集を開始しています。提出お願いします！\nhttps://apps.apple.com/jp/app/eshub/id6745217075"])
+                            ShareSheet(activityItems: ["「"+live.name+"」でES募集を開始しています。提出お願いします！\nhttps://apps.apple.com/jp/app/eshub/id6745217075"])
                         }
                     }
                 } else {
@@ -77,8 +76,8 @@ struct ReceiveListView: View {
                             Spacer()
                             
                             Button {
-                                filteredRows.sort {
-                                    timeStringToSeconds($0[safe: 15] ?? "") < timeStringToSeconds($1[safe: 15] ?? "")
+                                filteredEntries.sort {
+                                    $0.totalDurationSeconds < $1.totalDurationSeconds
                                 }
                                 saveOrder()
                             } label: {
@@ -89,19 +88,17 @@ struct ReceiveListView: View {
                         .padding()
                         
                         List {
-                            ForEach(filteredRows, id: \.self) { row in
-                                if row.count > 1 {
-                                    NavigationLink {
-                                        ReceiveDetailView(row: row)
-                                    } label: {
-                                        HStack {
-                                            Text(row[2])
-                                            Spacer()
-                                                .padding()
-                                            Text(row[15])
-                                                .font(.subheadline)
-                                                .foregroundColor(.gray)
-                                        }
+                            ForEach(filteredEntries) { entry in
+                                NavigationLink {
+                                    ReceiveDetailView(entry: entry)
+                                } label: {
+                                    HStack {
+                                        Text(entry.bandName)
+                                        Spacer()
+                                            .padding()
+                                        Text(entry.totalDurationText)
+                                            .font(.subheadline)
+                                            .foregroundColor(.gray)
                                     }
                                 }
                             }
@@ -148,7 +145,7 @@ struct ReceiveListView: View {
         }
         .navigationTitle("参加バンドリスト")
         .toolbar {
-            if !filteredRows.isEmpty {
+            if !filteredEntries.isEmpty {
                 EditButton()
             }
         }
@@ -157,17 +154,15 @@ struct ReceiveListView: View {
     private func loadData() async {
         isLoading = true
         do {
-            try await spreadSheetManager.fetchGoogleSheetData()
-            let rows = spreadSheetManager.spreadSheetResponse.values.filter { $0[1] == liveName }
+            let entries = try await FirestoreManager.shared.fetchEntries(for: live)
             
             let savedOrder = UserDefaults.standard.stringArray(forKey: orderKey)
             if let savedOrder = savedOrder {
-                filteredRows = rows.sorted {
-                    guard let first = $0[safe: 2], let second = $1[safe: 2] else { return false }
-                    return savedOrder.firstIndex(of: first) ?? Int.max < savedOrder.firstIndex(of: second) ?? Int.max
+                filteredEntries = entries.sorted {
+                    (savedOrder.firstIndex(of: $0.id) ?? Int.max) < (savedOrder.firstIndex(of: $1.id) ?? Int.max)
                 }
             } else {
-                filteredRows = rows
+                filteredEntries = entries
             }
         } catch {
             print("Error: \(error)")
@@ -176,24 +171,13 @@ struct ReceiveListView: View {
     }
     
     private func moveItem(from source: IndexSet, to destination: Int) {
-        filteredRows.move(fromOffsets: source, toOffset: destination)
+        filteredEntries.move(fromOffsets: source, toOffset: destination)
         saveOrder()
     }
     
     private func saveOrder() {
-        let order = filteredRows.compactMap { $0[safe: 2] }
+        let order = filteredEntries.map(\.id)
         UserDefaults.standard.set(order, forKey: orderKey)
-    }
-    
-    private func timeStringToSeconds(_ time: String) -> Int {
-        let trimmedTime = time.trimmingCharacters(in: .whitespacesAndNewlines)
-        let components = trimmedTime.split(separator: ":")
-        guard components.count == 2,
-              let minutes = Int(components[0]),
-              let seconds = Int(components[1]) else {
-            return Int.max // 無効な値は最後に回す
-        }
-        return minutes * 60 + seconds
     }
     
     private func exportTimeTable() {
@@ -202,22 +186,14 @@ struct ReceiveListView: View {
         
         var currentTime = selectedTime
         
-        let timeTable = filteredRows.map { row in
-            let bandName = row[safe: 2] ?? ""
-            let totalTimeStr = row[safe: 15]?.trimmingCharacters(in: .whitespacesAndNewlines) ?? "00:00" // mm:ss
-            
-            let timeParts = totalTimeStr.components(separatedBy: ":")
-            let minutes = Int(timeParts[safe: 0]?.trimmingCharacters(in: .whitespaces) ?? "0") ?? 0
-            let seconds = Int(timeParts[safe: 1]?.trimmingCharacters(in: .whitespaces) ?? "0") ?? 0
-            let durationInSeconds = (minutes * 60) + seconds
-            
+        let timeTable = filteredEntries.map { entry in
             let startStr = dateFormatter.string(from: currentTime)
-            let endTime = currentTime.addingTimeInterval(TimeInterval(durationInSeconds))
+            let endTime = currentTime.addingTimeInterval(TimeInterval(entry.totalDurationSeconds))
             let endStr = dateFormatter.string(from: endTime)
             
             currentTime = endTime.addingTimeInterval(TimeInterval(selectedBreakTime * 60)) // 転換時間を加えて次の開始時間を設定
             
-            return "\(startStr)〜\(endStr)  \(bandName)"
+            return "\(startStr)〜\(endStr)  \(entry.bandName)"
         }.joined(separator: "\n")
         
         let activityVC = UIActivityViewController(activityItems: [timeTable], applicationActivities: nil)
@@ -229,17 +205,13 @@ struct ReceiveListView: View {
     }
     
     private func exportSoundRequests() {
-        let soundData = filteredRows.map { row in
-            let bandName = row[safe: 2] ?? ""
-            let totalTime = row[safe: 15] ?? ""
-            let titles = (row[safe: 11] ?? "").components(separatedBy: ", ")
-            let sounds = (row[safe: 13] ?? "").components(separatedBy: ", ")
-            let paired = zip(titles, sounds)
-                .filter { !$0.0.trimmingCharacters(in: .whitespaces).isEmpty } // 空タイトルを除外
-                .map { "「\($0)」\($1)" }
+        let soundData = filteredEntries.map { entry in
+            let paired = entry.songs
+                .filter(\.hasTitle)
+                .map { "「\($0.title)」\($0.sound)" }
                 .joined(separator: "\n")
             
-            return "- \(bandName) \(totalTime)\n\(paired)"
+            return "- \(entry.bandName) \(entry.totalDurationText)\n\(paired)"
         }.joined(separator: "\n\n")
         
         let activityVC = UIActivityViewController(activityItems: [soundData], applicationActivities: nil)
@@ -251,17 +223,13 @@ struct ReceiveListView: View {
     }
     
     private func exportLightRequests() {
-        let lightData = filteredRows.map { row in
-            let bandName = row[safe: 2] ?? ""
-            let totalTime = row[safe: 15] ?? ""
-            let titles = (row[safe: 11] ?? "").components(separatedBy: ", ")
-            let lights = (row[safe: 14] ?? "").components(separatedBy: ", ")
-            let paired = zip(titles, lights)
-                .filter { !$0.0.trimmingCharacters(in: .whitespaces).isEmpty } // 空タイトルを除外
-                .map { "「\($0)」\($1)" }
+        let lightData = filteredEntries.map { entry in
+            let paired = entry.songs
+                .filter(\.hasTitle)
+                .map { "「\($0.title)」\($0.lighting)" }
                 .joined(separator: "\n")
             
-            return "- \(bandName) \(totalTime)\n\(paired)"
+            return "- \(entry.bandName) \(entry.totalDurationText)\n\(paired)"
         }.joined(separator: "\n\n")
         
         let activityVC = UIActivityViewController(activityItems: [lightData], applicationActivities: nil)
@@ -271,20 +239,8 @@ struct ReceiveListView: View {
             rootVC.present(activityVC, animated: true)
         }
     }
-    
-    private var formattedTime: String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "HH:mm"
-        return formatter.string(from: selectedTime)
-    }
-}
-
-extension Collection {
-    subscript(safe index: Index) -> Element? {
-        return indices.contains(index) ? self[index] : nil
-    }
 }
 
 #Preview {
-    ReceiveListView(liveName: "模擬データ")
+    ReceiveListView(live: LiveEvent(id: "preview-live", name: "模擬データ", watchWord: "あいことば"))
 }

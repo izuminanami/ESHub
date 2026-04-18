@@ -6,21 +6,14 @@
 //
 
 import SwiftUI
-import GoogleMobileAds
 
-class AppDelegate: UIResponder, UIApplicationDelegate {
-    func application(_ application: UIApplication,
-                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        MobileAds.shared.start(completionHandler: nil)
-        return true
-    }
-}
 let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
 
 struct HomeView: View {
     @StateObject private var store = Store()
     @State private var showInfo = false
     @State private var showAds = false
+    
     var body: some View {
         NavigationStack {
             ZStack {

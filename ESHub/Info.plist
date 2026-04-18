@@ -7,7 +7,11 @@
 		<string>ja</string>
 	</array>
 	<key>GADApplicationIdentifier</key>
-	<string>ca-app-pub-3940256099942544~1458002511</string>
+	<string>$(GAD_APP_ID)</string>
+	<key>GADBannerAdUnitID</key>
+	<string>$(GAD_BANNER_AD_UNIT_ID)</string>
+	<key>GADInterstitialAdUnitID</key>
+	<string>$(GAD_INTERSTITIAL_AD_UNIT_ID)</string>
 	<key>SKAdNetworkIdentifier</key>
 	<string>cstr6suwn9.skadnetwork</string>
 </dict>

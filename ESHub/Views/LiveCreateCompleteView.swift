@@ -10,18 +10,9 @@ import SwiftUI
 struct LiveCreateCompleteView: View {
     @StateObject private var store = Store()
     @State private var isShareSheetPresentedForPerformers = false
-    @State private var isShareSheetPresentedForCoOrganizers = false
-    let liveName: String
-    let watchWord: String
-    private let orderKeyLiveName: String
-    private let orderKeyWatchWord: String
+    @State private var isShareSheetPresentedForManagers = false
+    let live: LiveEvent
     
-    init(liveName: String, watchWord: String) {
-        self.liveName = liveName
-        self.watchWord = watchWord
-        self.orderKeyLiveName = "sortedOrder_\(liveName)"
-        self.orderKeyWatchWord = "sortedOrder_\(watchWord)"
-    }
     var body: some View {
         NavigationStack {
             ZStack {
@@ -33,21 +24,25 @@ struct LiveCreateCompleteView: View {
                     
                     HStack {
                         Button {
-                            isShareSheetPresentedForCoOrganizers = true
+                            isShareSheetPresentedForManagers = true
                         } label: {
-                            MiddleButtonLabelComponent(text: "メモを共有")
+                            MiddleButtonLabelComponent(text: "管理URL共有")
                         }
-                        .sheet(isPresented: $isShareSheetPresentedForCoOrganizers) {
-                            ShareSheet(activityItems: ["ライブ名："+liveName+"\n合言葉："+watchWord])
+                        .sheet(isPresented: $isShareSheetPresentedForManagers) {
+                            ShareSheet(activityItems: [
+                                "「\(live.name)」の応募管理URLです。\n主催者のみで共有してください。\n\(live.manageURL.absoluteString)"
+                            ])
                         }
                         
                         Button {
                             isShareSheetPresentedForPerformers = true
                         } label: {
-                            MiddleButtonLabelComponent(text: "告知をする")
+                            MiddleButtonLabelComponent(text: "応募URL共有")
                         }
                         .sheet(isPresented: $isShareSheetPresentedForPerformers) {
-                            ShareSheet(activityItems: ["「"+liveName+"」でES募集を開始しました。提出お願いします！\nhttps://apps.apple.com/jp/app/eshub/id6745217075"])
+                            ShareSheet(activityItems: [
+                                "「\(live.name)」のエントリーを開始しました。\nURLから提出してください。\n\(live.entryURL.absoluteString)\nインストール: https://apps.apple.com/jp/app/eshub/id6745217075"
+                            ])
                         }
                     }
                     
@@ -68,5 +63,5 @@ struct LiveCreateCompleteView: View {
 }
 
 #Preview {
-    LiveCreateCompleteView(liveName: "模擬データ", watchWord: "あいことば")
+    LiveCreateCompleteView(live: LiveEvent(id: "preview-live", name: "模擬データ"))
 }

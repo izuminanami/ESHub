@@ -12,7 +12,7 @@ struct SubmitFormView: View {
     @StateObject private var store = Store()
     @State private var showPicker = false
     @State private var isSubmitted = false
-    @State private var liveName: String = ""
+    @State private var entryURLText: String
     @State private var bandName: String = ""
     @State private var otherRequest: String = ""
     @State private var se = "あり"
@@ -31,6 +31,12 @@ struct SubmitFormView: View {
     @State private var showAlert = false
     @State private var alertMessage = ""
     @State private var isButtonEnabled = true // 提出ボタン連打対策
+    let live: LiveEvent?
+    
+    init(live: LiveEvent? = nil) {
+        self.live = live
+        _entryURLText = State(initialValue: live?.entryURL.absoluteString ?? "")
+    }
     
     var body: some View {
         GeometryReader { geometry in
@@ -46,12 +52,22 @@ struct SubmitFormView: View {
                         Spacer()
                             .frame(height: 20)
                         
-                        HStack {
-                            Text("ライブ名：")
-                            UnderlineTextFieldStyleComponent(title: nil, placeholder: "伝えられたライブ名を入力してください", inputText: $liveName)
-                                .frame(width: formWidth)
+                        if let live {
+                            HStack {
+                                Text("ライブ名：")
+                                Text(live.name)
+                                    .frame(width: formWidth, alignment: .leading)
+                                    .foregroundColor(Color("primaryButtonColor"))
+                            }
+                            .padding(.horizontal)
+                        } else {
+                            HStack {
+                                Text("応募URL：")
+                                UnderlineTextFieldStyleComponent(title: nil, placeholder: "共有されたURLを入力してください", inputText: $entryURLText)
+                                    .frame(width: formWidth)
+                            }
+                            .padding(.horizontal)
                         }
-                        .padding(.horizontal)
                         
                         Spacer()
                             .frame(height: 20)
@@ -220,7 +236,7 @@ struct SubmitFormView: View {
         
         isButtonEnabled = false
         
-        let trimmedLiveName = liveName.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedEntryURL = entryURLText.trimmingCharacters(in: .whitespacesAndNewlines)
         let trimmedBandName = bandName.trimmingCharacters(in: .whitespacesAndNewlines)
         
         guard NetworkManager.shared.isConnected else {
@@ -229,8 +245,8 @@ struct SubmitFormView: View {
             isButtonEnabled = true
             return
         }
-        guard !trimmedLiveName.isEmpty else {
-            alertMessage = "ライブ名を入力してください"
+        guard live != nil || !trimmedEntryURL.isEmpty else {
+            alertMessage = "応募URLを入力してください"
             showAlert = true
             isButtonEnabled = true
             return
@@ -258,16 +274,37 @@ struct SubmitFormView: View {
         
         Task {
             do {
-                guard let live = try await FirestoreManager.shared.fetchLive(named: trimmedLiveName) else {
+                let targetLive: LiveEvent
+                if let live {
+                    targetLive = live
+                } else {
+                    guard
+                        let url = URL(string: trimmedEntryURL),
+                        let destination = DeepLinkDestination(url: url),
+                        case .entry(let liveID) = destination,
+                        let fetchedLive = try await FirestoreManager.shared.fetchLive(id: liveID)
+                    else {
+                        await MainActor.run {
+                            alertMessage = "応募URLが正しくありません"
+                            showAlert = true
+                            isButtonEnabled = true
+                        }
+                        return
+                    }
+                    
+                    targetLive = fetchedLive
+                }
+                
+                guard !targetLive.name.isEmpty else {
                     await MainActor.run {
-                        alertMessage = "入力されたライブ名は存在しません"
+                        alertMessage = "入力されたライブは存在しません"
                         showAlert = true
                         isButtonEnabled = true
                     }
                     return
                 }
                 
-                _ = try await FirestoreManager.shared.submitEntry(to: live, draft: draft)
+                _ = try await FirestoreManager.shared.submitEntry(to: targetLive, draft: draft)
                 
                 await MainActor.run {
                     if !store.isPurchased {

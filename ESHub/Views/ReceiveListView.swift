@@ -43,7 +43,9 @@ struct ReceiveListView: View {
                             MiddleButtonLabelComponent(text: "告知をする")
                         }
                         .sheet(isPresented: $isShareSheetPresentedForPerformers) {
-                            ShareSheet(activityItems: ["「"+live.name+"」でES募集を開始しています。提出お願いします！\nhttps://apps.apple.com/jp/app/eshub/id6745217075"])
+                            ShareSheet(activityItems: [
+                                "「\(live.name)」のエントリーを開始しました。\nURLから提出してください。\n\(live.entryURL.absoluteString)\nインストール: https://apps.apple.com/jp/app/eshub/id6745217075"
+                            ])
                         }
                     }
                 } else {
@@ -242,5 +244,5 @@ struct ReceiveListView: View {
 }
 
 #Preview {
-    ReceiveListView(live: LiveEvent(id: "preview-live", name: "模擬データ", watchWord: "あいことば"))
+    ReceiveListView(live: LiveEvent(id: "preview-live", name: "模擬データ"))
 }

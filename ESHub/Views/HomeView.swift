@@ -11,6 +11,7 @@ let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionStri
 
 struct HomeView: View {
     @StateObject private var store = Store()
+    @EnvironmentObject private var router: AppRouter
     @State private var showInfo = false
     @State private var showAds = false
     
@@ -151,6 +152,39 @@ struct HomeView: View {
                     AdBannerContainerView()
                 }
             }
+            .navigationDestination(
+                isPresented: Binding(
+                    get: { router.entryLive != nil },
+                    set: { if !$0 { router.entryLive = nil } }
+                )
+            ) {
+                if let live = router.entryLive {
+                    SubmitFormView(live: live)
+                }
+            }
+            .navigationDestination(
+                isPresented: Binding(
+                    get: { router.manageLive != nil },
+                    set: { if !$0 { router.manageLive = nil } }
+                )
+            ) {
+                if let live = router.manageLive {
+                    ReceiveListView(live: live)
+                }
+            }
+            .alert(
+                "URLエラー",
+                isPresented: Binding(
+                    get: { router.alertMessage != nil },
+                    set: { if !$0 { router.alertMessage = nil } }
+                )
+            ) {
+                Button("OK", role: .cancel) {
+                    router.alertMessage = nil
+                }
+            } message: {
+                Text(router.alertMessage ?? "")
+            }
         }
         .task {
             await store.loadProducts()
@@ -161,4 +195,5 @@ struct HomeView: View {
 
 #Preview {
     HomeView()
+        .environmentObject(AppRouter())
 }

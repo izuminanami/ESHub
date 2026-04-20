@@ -24,6 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 struct ESHubApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @StateObject private var store = Store()
+    @StateObject private var router = AppRouter()
     
     init() {
         _ = NetworkManager.shared // 起動時にネットワーク状態の初期確認を促す(初回guard回避のため)
@@ -33,6 +34,12 @@ struct ESHubApp: App {
         WindowGroup {
             HomeView()
                 .environmentObject(store)
+                .environmentObject(router)
+                .onOpenURL { url in
+                    Task {
+                        await router.open(url: url)
+                    }
+                }
         }
     }
 }

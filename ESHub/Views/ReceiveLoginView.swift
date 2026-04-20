@@ -12,8 +12,7 @@ struct ReceiveLoginView: View {
     @State private var isAuthorized = false
     @State private var authorizedLive: LiveEvent?
     @State private var showAlert = false
-    @State var liveName = ""
-    @State var watchWord = ""
+    @State var manageURLText = ""
     @State var alertMessage = ""
     private let spacerHeight: CGFloat = 50
     
@@ -26,19 +25,9 @@ struct ReceiveLoginView: View {
                     Spacer()
                         .frame(height: spacerHeight)
                     
-                    UnderlineTextFieldStyleComponent(title: "ライブ名", placeholder: "ライブ名を入力してください", inputText: $liveName)
+                    UnderlineTextFieldStyleComponent(title: "管理URL", placeholder: "管理用URLを入力してください", inputText: $manageURLText)
                     
-                    Text("作成したライブ名を入力してください")
-                        .font(.subheadline)
-                        .foregroundColor(.gray)
-                        .padding(.horizontal)
-                    
-                    Spacer()
-                        .frame(height: spacerHeight)
-                    
-                    UnderlineTextFieldStyleComponent(title: "合言葉", placeholder: "合言葉を入力してください", inputText: $watchWord)
-                    
-                    Text("設定した合言葉を入力してください")
+                    Text("ライブ作成完了画面で共有される管理用URLを入力してください")
                         .font(.subheadline)
                         .foregroundColor(.gray)
                         .padding(.horizontal)
@@ -71,51 +60,43 @@ struct ReceiveLoginView: View {
         .navigationTitle("ESを確認する")
     }
     private func displayData() {
-        let trimmedLiveName = liveName.trimmingCharacters(in: .whitespacesAndNewlines)
-        let trimmedWatchWord = watchWord.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedManageURL = manageURLText.trimmingCharacters(in: .whitespacesAndNewlines)
         
         guard NetworkManager.shared.isConnected else {
             alertMessage = "ネットワークに接続されていません"
             showAlert = true
             return
         }
-        guard !(trimmedLiveName.isEmpty && trimmedWatchWord.isEmpty) else {
-            alertMessage = "ライブ名と合言葉を入力してください"
-            showAlert = true
-            return
-        }
-        guard !trimmedLiveName.isEmpty else {
-            alertMessage = "ライブ名を入力してください"
-            showAlert = true
-            return
-        }
-        guard !trimmedWatchWord.isEmpty else {
-            alertMessage = "合言葉を入力してください"
+        guard !trimmedManageURL.isEmpty else {
+            alertMessage = "管理URLを入力してください"
             showAlert = true
             return
         }
         
         Task {
             do {
-                guard let live = try await FirestoreManager.shared.fetchLive(named: trimmedLiveName) else {
+                guard
+                    let url = URL(string: trimmedManageURL),
+                    let destination = DeepLinkDestination(url: url),
+                    case .manage(let adminToken) = destination
+                else {
                     await MainActor.run {
-                        alertMessage = "入力されたライブ名は存在しません"
+                        alertMessage = "管理URLが正しくありません"
                         showAlert = true
                     }
                     return
                 }
                 
-                guard live.watchWord == trimmedWatchWord else {
+                guard let live = try await FirestoreManager.shared.fetchLive(adminToken: adminToken) else {
                     await MainActor.run {
-                        alertMessage = "合言葉が正しくありません"
+                        alertMessage = "入力されたライブは存在しません"
                         showAlert = true
                     }
                     return
                 }
                 
                 await MainActor.run {
-                    liveName = live.name
-                    watchWord = live.watchWord
+                    manageURLText = live.manageURL.absoluteString
                     authorizedLive = live
                     isAuthorized = true
                 }

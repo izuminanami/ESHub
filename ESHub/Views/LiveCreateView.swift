@@ -13,7 +13,6 @@ struct LiveCreateView: View {
     @State private var isCreated = false
     @State private var createdLive: LiveEvent?
     @State private var liveName: String = ""
-    @State private var watchWord: String = ""
     @State private var showAlert = false
     @State private var alertMessage = ""
     @State private var isButtonEnabled = true // 提出ボタン連打対策
@@ -35,19 +34,6 @@ struct LiveCreateView: View {
                         .foregroundColor(.gray)
                         .padding(.horizontal)
                     
-                    Spacer()
-                        .frame(height: spacerHeight)
-                    
-                    UnderlineTextFieldStyleComponent(title: "合言葉", placeholder: "合言葉を設定してください", inputText: $watchWord)
-                    
-                    Text("合言葉は集まったESを確認するのに使用します")
-                        .font(.subheadline)
-                        .foregroundColor(.gray)
-                        .padding(.horizontal)
-                    
-                    Spacer()
-                        .frame(height: spacerHeight)
-                    
                     Button {
                         sendData()
                     } label: {
@@ -58,7 +44,7 @@ struct LiveCreateView: View {
                     }
                     .navigationDestination(isPresented: $isCreated) {
                         if let createdLive {
-                            LiveCreateCompleteView(liveName: createdLive.name, watchWord: createdLive.watchWord)
+                            LiveCreateCompleteView(live: createdLive)
                         }
                     }
                     .onAppear() {
@@ -90,15 +76,8 @@ struct LiveCreateView: View {
         isButtonEnabled = false
         
         let trimmedLiveName = liveName.trimmingCharacters(in: .whitespacesAndNewlines)
-        let trimmedWatchWord = watchWord.trimmingCharacters(in: .whitespacesAndNewlines)
         guard NetworkManager.shared.isConnected else {
             alertMessage = "ネットワークに接続されていません"
-            showAlert = true
-            isButtonEnabled = true
-            return
-        }
-        guard !(trimmedLiveName.isEmpty && trimmedWatchWord.isEmpty) else {
-            alertMessage = "ライブ名と合言葉を入力してください"
             showAlert = true
             isButtonEnabled = true
             return
@@ -109,23 +88,15 @@ struct LiveCreateView: View {
             isButtonEnabled = true
             return
         }
-        guard !trimmedWatchWord.isEmpty else {
-            alertMessage = "合言葉を入力してください"
-            showAlert = true
-            isButtonEnabled = true
-            return
-        }
         
         Task {
             do {
                 let live = try await FirestoreManager.shared.createLive(
-                    name: trimmedLiveName,
-                    watchWord: trimmedWatchWord
+                    name: trimmedLiveName
                 )
                 
                 await MainActor.run {
                     liveName = live.name
-                    watchWord = live.watchWord
                     createdLive = live
                     isCreated = true
                     

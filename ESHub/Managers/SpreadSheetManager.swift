@@ -12,20 +12,20 @@ struct LiveEvent: Identifiable, Hashable {
     let id: String
     let name: String
     let normalizedName: String
-    let watchWord: String
+    let adminToken: String
     let createdAt: Date?
     
     init(
         id: String,
         name: String,
         normalizedName: String? = nil,
-        watchWord: String,
+        adminToken: String = FirestoreManager.generateAdminToken(),
         createdAt: Date? = nil
     ) {
         self.id = id
         self.name = name
         self.normalizedName = normalizedName ?? FirestoreManager.normalize(name)
-        self.watchWord = watchWord
+        self.adminToken = adminToken
         self.createdAt = createdAt
     }
     
@@ -33,8 +33,7 @@ struct LiveEvent: Identifiable, Hashable {
         guard
             let data = document.data(),
             let name = data["name"] as? String,
-            let normalizedName = data["normalizedName"] as? String,
-            let watchWord = data["watchWord"] as? String
+            let normalizedName = data["normalizedName"] as? String
         else {
             return nil
         }
@@ -43,9 +42,17 @@ struct LiveEvent: Identifiable, Hashable {
             id: document.documentID,
             name: name,
             normalizedName: normalizedName,
-            watchWord: watchWord,
+            adminToken: data["adminToken"] as? String ?? "",
             createdAt: (data["createdAt"] as? Timestamp)?.dateValue()
         )
+    }
+    
+    var entryURL: URL {
+        DeepLinkDestination.entry(liveID: id).url
+    }
+    
+    var manageURL: URL {
+        DeepLinkDestination.manage(adminToken: adminToken).url
     }
 }
 
@@ -198,9 +205,8 @@ final class FirestoreManager {
     
     private init() {}
     
-    func createLive(name: String, watchWord: String) async throws -> LiveEvent {
+    func createLive(name: String) async throws -> LiveEvent {
         let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
-        let trimmedWatchWord = watchWord.trimmingCharacters(in: .whitespacesAndNewlines)
         
         let existingLive = try await fetchLive(named: trimmedName)
         guard existingLive == nil else {
@@ -213,14 +219,14 @@ final class FirestoreManager {
         let live = LiveEvent(
             id: document.documentID,
             name: trimmedName,
-            watchWord: trimmedWatchWord,
+            adminToken: Self.generateAdminToken(),
             createdAt: Date()
         )
         
         try await document.setData([
             "name": live.name,
             "normalizedName": live.normalizedName,
-            "watchWord": live.watchWord,
+            "adminToken": live.adminToken,
             "createdAt": FieldValue.serverTimestamp()
         ])
         
@@ -235,6 +241,37 @@ final class FirestoreManager {
         
         let snapshot = try await database.collection(CollectionName.lives)
             .whereField("normalizedName", isEqualTo: normalizedName)
+            .limit(to: 1)
+            .getDocuments()
+        
+        return snapshot.documents.compactMap(LiveEvent.init(document:)).first
+    }
+    
+    func fetchLive(id: String) async throws -> LiveEvent? {
+        let trimmedID = id.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedID.isEmpty else {
+            return nil
+        }
+        
+        let document = try await database.collection(CollectionName.lives)
+            .document(trimmedID)
+            .getDocument()
+        
+        guard document.exists else {
+            return nil
+        }
+        
+        return LiveEvent(document: document)
+    }
+    
+    func fetchLive(adminToken: String) async throws -> LiveEvent? {
+        let trimmedToken = adminToken.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedToken.isEmpty else {
+            return nil
+        }
+        
+        let snapshot = try await database.collection(CollectionName.lives)
+            .whereField("adminToken", isEqualTo: trimmedToken)
             .limit(to: 1)
             .getDocuments()
         
@@ -266,6 +303,10 @@ final class FirestoreManager {
             .trimmingCharacters(in: .whitespacesAndNewlines)
             .folding(options: [.caseInsensitive, .diacriticInsensitive, .widthInsensitive], locale: .current)
             .lowercased()
+    }
+    
+    static func generateAdminToken() -> String {
+        UUID().uuidString.replacingOccurrences(of: "-", with: "").lowercased()
     }
 }
 

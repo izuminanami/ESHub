@@ -6,6 +6,19 @@
 	<array>
 		<string>ja</string>
 	</array>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>jp.eshub.app</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>eshub</string>
+			</array>
+		</dict>
+	</array>
 	<key>GADApplicationIdentifier</key>
 	<string>$(GAD_APP_ID)</string>
 	<key>GADBannerAdUnitID</key>
